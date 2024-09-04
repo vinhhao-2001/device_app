@@ -1,0 +1,76 @@
+import 'package:flutter/material.dart';
+
+import '../../../data/api/firebase/parent_firebase_api.dart';
+import '../../../data/api/native/native_communicator.dart';
+import 'child_apps_screen.dart';
+import 'device_state_screen.dart';
+import 'monitor_settings_screen.dart';
+
+class ParentScreen extends StatefulWidget {
+  const ParentScreen({super.key});
+
+  @override
+  State<ParentScreen> createState() => _ParentScreenState();
+}
+
+class _ParentScreenState extends State<ParentScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Kiểm soát ứng dụng của trẻ')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ElevatedButton(
+              onPressed: () async {
+                // đẩy thời gian sử dụng các ứng dụng lên firebase
+                await NativeCommunicator().usageStatsChannel();
+              },
+              child: const Text('Giới hạn ứng dụng'),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MonitoringSettingsScreen(),
+                  ),
+                );
+              },
+              child: const Text('Giám sát ứng dụng'),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () async {
+                await ParentFirebaseApi().requestChildDeviceInfo();
+                if (!(context).mounted) return;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const DeviceStateScreen()),
+                );
+              },
+              child: const Text('Xem tình trạng thiết bị của trẻ'),
+            ),
+            const SizedBox(height: 30),
+            ElevatedButton(
+              onPressed: () async {
+                // lấy thời gian sử dụng ứng dụng trên firebase
+                final appList = await ParentFirebaseApi().getAppsInfo();
+                if (!(context).mounted) return;
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => ChildAppsScreen(appList: appList)),
+                );
+              },
+              child: const Text('Xem thời gian sử dụng thiết bị'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
