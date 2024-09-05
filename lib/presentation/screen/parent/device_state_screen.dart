@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../bloc/device_info/device_info_bloc.dart';
+import '../../bloc/device_info/device_info_bloc.dart';
 
 class DeviceStateScreen extends StatefulWidget {
   const DeviceStateScreen({super.key});

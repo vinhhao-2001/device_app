@@ -38,7 +38,7 @@ class MainActivity : FlutterActivity() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val action = intent?.action
             val packageName = intent?.data?.schemeSpecificPart
-            if (packageName != null) {
+            if (packageName != null && context != null) {
                 when (action) {
                     Intent.ACTION_PACKAGE_ADDED -> {
                         // Xử lý khi ứng dụng được cài đặt
@@ -48,7 +48,7 @@ class MainActivity : FlutterActivity() {
                         val appIcon = context?.packageManager?.getApplicationIcon(
                             context.packageManager.getApplicationInfo(packageName, 0)
                         )
-                        val  icon = UsageInfoHander(context).drawableToByteArray(appIcon!!)
+                        val  icon = UsageInfoHandler(context).drawableToByteArray(appIcon!!)
                         Log.d("AppInstalledReceiver", "App installed: $icon")
                         sendAppInstalledEvent("install", packageName, appName)
                     }

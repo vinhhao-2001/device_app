@@ -1,5 +1,7 @@
+import 'package:device_app/core/utils/local_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../data/api/firebase/child_firebase_api.dart';
 import '../../../data/api/native/native_communicator.dart';
@@ -36,6 +38,7 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
     // thông tin thiết bị
     ChildFirebaseApi().sendDeviceInfo();
     installRemoveChannel.setMethodCallHandler(_handleAppInstall);
+    requestNotificationPermission();
   }
 
   Future<void> _handleAppInstall(MethodCall call) async {
@@ -47,6 +50,14 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
         break;
       default:
         throw MissingPluginException('Not implemented');
+    }
+  }
+
+  Future<void> requestNotificationPermission() async {
+    var status = await Permission.notification.status;
+    if (status.isDenied) {
+      // Nếu quyền chưa được cấp, yêu cầu quyền
+      await Permission.notification.request();
     }
   }
 
@@ -63,7 +74,9 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
             ),
             const SizedBox(height: 20),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                LocalNotification().showNotification('a', 'b');
+              },
               child: const Text('Ứng dụng bị giới hạn'),
             ),
             TextButton(

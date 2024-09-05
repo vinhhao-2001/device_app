@@ -14,6 +14,7 @@ import AVFoundation
         if #available(iOS 10.0, *) {
           UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
         }
+
         let controller = window?.rootViewController as! FlutterViewController
         
         // Bật theo dõi pin
