@@ -19,10 +19,10 @@ class LocalNotification {
     flutterLocalNotificationsPlugin.initialize(settings);
   }
   Future<void> showNotification(String event, String appName) async {
-    try{
+    try {
       print('start');
       const AndroidNotificationDetails androidNotificationDetails =
-      AndroidNotificationDetails(
+          AndroidNotificationDetails(
         'channel ID',
         "channel Name",
         channelDescription: 'channel Description',
@@ -31,13 +31,12 @@ class LocalNotification {
       );
 
       const NotificationDetails notificationDetails = NotificationDetails(
-          android: androidNotificationDetails, iOS: DarwinNotificationDetails());
+          android: androidNotificationDetails,
+          iOS: DarwinNotificationDetails());
       await flutterLocalNotificationsPlugin.show(0, 'Quản lý cài đặt ứng dụng',
           'Thiết bị của trẻ đã $event ứng dụng $appName', notificationDetails);
-    }
-    catch(e){
+    } catch (e) {
       print(e);
     }
-    }
-
+  }
 }
