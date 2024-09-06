@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 
@@ -19,15 +20,24 @@ class ChildFirebaseApi {
   }
 
   // cài đặt giám sát trên thiết bị của trẻ
-  Future<void> monitorSettingChildDevice(MonitorSettingsModel model) async {
-    final DatabaseReference reference = FirebaseDatabase.instance.ref();
+  Future<MonitorSettingsModel?> monitorSettingChildDevice() async {
+    try {
+      final DatabaseReference reference = FirebaseDatabase.instance.ref();
+      final snapshot = await reference.child('monitorSettingsModel').once();
 
-    reference.child('monitorSettingsModel').onValue.map((event) {
-      final data = event.snapshot.value as Map<dynamic, dynamic>;
-      model = MonitorSettingsModel.fromMap(data);
-      // cài đặt thiết bị của trẻ trong native
-      NativeCommunicator().monitorSettingChannel(model);
-    });
+      final data = snapshot.snapshot.value as Map<dynamic, dynamic>?;
+
+      if (data != null && data.isNotEmpty) {
+        final model = MonitorSettingsModel.fromMap(data);
+        // cài đặt thiết bị của trẻ trong native
+        if (Platform.isIOS) NativeCommunicator().monitorSettingChannel(model);
+        return model;
+      } else {
+        return null;
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 
   // gửi danh sách các ứng dụng lên firebase

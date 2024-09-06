@@ -25,8 +25,7 @@ class _ParentScreenState extends State<ParentScreen> {
           children: [
             ElevatedButton(
               onPressed: () async {
-                // đẩy thời gian sử dụng các ứng dụng lên firebase
-                await NativeCommunicator().usageStatsChannel();
+                await NativeCommunicator().appLimitChannel();
               },
               child: const Text('Giới hạn ứng dụng'),
             ),
@@ -40,7 +39,7 @@ class _ParentScreenState extends State<ParentScreen> {
                   ),
                 );
               },
-              child: const Text('Giám sát ứng dụng'),
+              child: const Text('Cài đặt giám sát ứng dụng'),
             ),
             const SizedBox(height: 30),
             ElevatedButton(
@@ -68,6 +67,11 @@ class _ParentScreenState extends State<ParentScreen> {
               },
               child: const Text('Xem thời gian sử dụng thiết bị'),
             ),
+            const SizedBox(height: 30),
+            TextButton(
+              onPressed: () {},
+              child: const Text('Lịch sử gỡ bỏ và cài đặt các ứng dụng'),
+            )
           ],
         ),
       ),

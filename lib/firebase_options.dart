@@ -54,6 +54,7 @@ class DefaultFirebaseOptions {
     appId: '1:263524329195:android:8d73fbfc766a3ff8e0c0ae',
     messagingSenderId: '263524329195',
     projectId: 'device-app-b6686',
+    databaseURL: 'https://device-app-b6686-default-rtdb.firebaseio.com',
     storageBucket: 'device-app-b6686.appspot.com',
   );
 
@@ -62,6 +63,7 @@ class DefaultFirebaseOptions {
     appId: '1:263524329195:ios:dcd965debae6008ae0c0ae',
     messagingSenderId: '263524329195',
     projectId: 'device-app-b6686',
+    databaseURL: 'https://device-app-b6686-default-rtdb.firebaseio.com',
     storageBucket: 'device-app-b6686.appspot.com',
     iosBundleId: 'com.hao.deviceApp',
   );

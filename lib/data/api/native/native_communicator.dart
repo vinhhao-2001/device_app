@@ -16,12 +16,13 @@ class NativeCommunicator {
   // lấy thời gian sử dụng thiết bị android
   static const usageChannel = MethodChannel('app_usage_channel');
   // các channel
-  // channel khởi tạo
+
+  // channel khởi tạo, kiểm tra quyền kiểm soát của phụ huynh
   Future<void> initChannel() async {
     await initPlatform.invokeMethod('init');
   }
 
-  // channel giám sát thiết bị
+  // channel giám sát thiết bị ios
   Future<bool> monitorSettingChannel(MonitorSettingsModel model) async {
     try {
       await _monitorChannel.invokeMethod(
@@ -34,6 +35,7 @@ class NativeCommunicator {
     }
   }
 
+  // Lấy thời gian sử dụng trong android
   Future<List<AppUsageInfoModel>> usageStatsChannel() async {
     try {
       final List<dynamic> apps =
@@ -49,12 +51,21 @@ class NativeCommunicator {
     }
   }
 
+  // Lấy thông tin thiết bị ios
   Future<DeviceInfoModel> deviceInfoChannel() async {
     try {
       final result = await _deviceInfoChannel.invokeMethod('deviceInfo');
       return DeviceInfoModel.fromMap(Map<String, dynamic>.from(result));
     } catch (e) {
       throw ('Lỗi lấy dữ liệu thông tin thiết bị: $e');
+    }
+  }
+
+  Future<void> appLimitChannel() async {
+    try {
+      await _deviceInfoChannel.invokeMethod('blockApp');
+    } catch (e) {
+      rethrow;
     }
   }
 }

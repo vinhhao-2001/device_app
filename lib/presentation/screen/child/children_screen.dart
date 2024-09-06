@@ -1,8 +1,8 @@
-import 'package:device_app/core/utils/local_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../core/utils/local_notification.dart';
 import '../../../data/api/firebase/child_firebase_api.dart';
 import '../../../data/api/native/native_communicator.dart';
 import '../../../model/monitor_settings_model.dart';
@@ -19,26 +19,21 @@ class ChildrenScreen extends StatefulWidget {
 }
 
 class _ChildrenScreenState extends State<ChildrenScreen> {
-  MonitorSettingsModel modelView = MonitorSettingsModel(
-      autoDateAndTime: false,
-      lockAccounts: false,
-      lockPasscode: false,
-      denySiri: false,
-      denyInAppPurchases: false,
-      requirePasswordForPurchases: false,
-      denyExplicitContent: true,
-      denyMultiplayerGaming: false,
-      denyMusicService: false,
-      denyAddingFriends: false);
+  MonitorSettingsModel? modelView;
   @override
   void initState() {
     super.initState();
-    // giám sát thiết bị
-    ChildFirebaseApi().monitorSettingChildDevice(modelView);
-    // thông tin thiết bị
-    ChildFirebaseApi().sendDeviceInfo();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    // Giám sát thiết bị
+    modelView = await ChildFirebaseApi().monitorSettingChildDevice();
+    // Thông tin thiết bị
+    await ChildFirebaseApi().sendDeviceInfo();
+    // Lắng nghe ứng dụng cài đặt hoặc gỡ bỏ
     installRemoveChannel.setMethodCallHandler(_handleAppInstall);
-    requestNotificationPermission();
+    await requestNotificationPermission();
   }
 
   Future<void> _handleAppInstall(MethodCall call) async {
@@ -47,6 +42,7 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
         final event = call.arguments['event'];
         final appName = call.arguments['appName'];
         ChildFirebaseApi().sendNotificationAppInstalled(event, appName);
+        LocalNotification().showNotification(event, appName);
         break;
       default:
         throw MissingPluginException('Not implemented');
@@ -64,37 +60,117 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.lightBlue[50],
+      appBar: AppBar(
+        title: const Text(
+          'Children App',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
+        ),
+        backgroundColor: Colors.blueAccent,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              widget.userType,
-              style: const TextStyle(fontSize: 20),
+            // Thêm hình ảnh minh họa
+            Image.asset(
+              'assets/images/icon_notification.png',
+              height: 150,
             ),
             const SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                LocalNotification().showNotification('a', 'b');
-              },
-              child: const Text('Ứng dụng bị giới hạn'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (_) => ChildrenMonitorScreen(model: modelView)),
-                );
-              },
-              child: const Text('Nội dung được phép'),
+            // Thông tin userType
+            Text(
+              'Welcome, ${widget.userType}!',
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
-            TextButton(
-              onPressed: () async {
-                await NativeCommunicator().usageStatsChannel();
-              },
-              child: const Text('Gửi thời gian sử dụng thiết bị'),
+            // Tạo các nút trong Card để đẹp hơn
+            Card(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              elevation: 5,
+              color: Colors.pink.shade100,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: SizedBox(
+                  width: double.infinity, // Đảm bảo Card chiếm hết chiều rộng
+                  child: ListView(
+                    shrinkWrap: true, // Tránh chiếm quá nhiều không gian
+                    children: [
+                      // Nút "Ứng dụng bị giới hạn"
+                      ListTile(
+                        title: const Text(
+                          'Ứng dụng bị giới hạn',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                        tileColor: Colors.orangeAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        onTap: () async {
+                          await NativeCommunicator().appLimitChannel();
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      // Nút "Nội dung được phép"
+                      ListTile(
+                        title: const Text(
+                          'Nội dung được phép',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                        tileColor: Colors.greenAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        onTap: () {
+                          if (modelView != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      ChildrenMonitorScreen(model: modelView!)),
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      // Nút "Gửi thời gian sử dụng thiết bị"
+                      ListTile(
+                        title: const Text(
+                          'Gửi thời gian sử dụng thiết bị',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                        tileColor: Colors.blueAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        onTap: () async {
+                          await NativeCommunicator().usageStatsChannel();
+                        },
+                      ),
+                      const SizedBox(height: 10),
+                      // Nút "Gửi thông báo ứng dụng cài đặt"
+                      ListTile(
+                        title: const Text(
+                          'Gửi thông báo ứng dụng cài đặt',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ),
+                        tileColor: Colors.redAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        onTap: () {
+                          LocalNotification().showNotification('a', 'b');
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ],
         ),

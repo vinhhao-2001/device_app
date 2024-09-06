@@ -1,10 +1,30 @@
 {
   "project_info": {
     "project_number": "263524329195",
+    "firebase_url": "https://device-app-b6686-default-rtdb.firebaseio.com",
     "project_id": "device-app-b6686",
     "storage_bucket": "device-app-b6686.appspot.com"
   },
   "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:263524329195:android:6fba2a6595089170e0c0ae",
+        "android_client_info": {
+          "package_name": "com.hao.device_"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMx7vVGe92HFyy-FwTpQnpSla_zG0SfIk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
     {
       "client_info": {
         "mobilesdk_app_id": "1:263524329195:android:8d73fbfc766a3ff8e0c0ae",

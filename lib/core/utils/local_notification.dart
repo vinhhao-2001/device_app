@@ -20,7 +20,6 @@ class LocalNotification {
   }
   Future<void> showNotification(String event, String appName) async {
     try {
-      print('start');
       const AndroidNotificationDetails androidNotificationDetails =
           AndroidNotificationDetails(
         'channel ID',

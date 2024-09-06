@@ -4,6 +4,7 @@ import SwiftUI
 import FamilyControls
 import CloudKit
 import AVFoundation
+import Firebase
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -69,7 +70,7 @@ import AVFoundation
                 MyModel.shared.settingMonitor(with: args)
             }
         }
-        
+        FirebaseApp.configure()
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
@@ -168,11 +169,3 @@ import AVFoundation
     }
 
 }
-
-//                    let contentView = ContentView()
-//                    let host = UIHostingController(rootView: contentView)
-//
-//                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-//                       let rootViewController = windowScene.windows.first?.rootViewController {
-//                        rootViewController.present(host, animated: true, completion: nil)
-//                    }

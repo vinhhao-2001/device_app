@@ -6,8 +6,6 @@ import '../../../model/app_usage_info_model.dart';
 import '../../../model/device_info_model.dart';
 import '../../../model/monitor_settings_model.dart';
 
-
-
 class ParentFirebaseApi {
   // yêu cầu lấy thông tin thiết bị của phụ huynh
   Future<void> requestChildDeviceInfo() async {

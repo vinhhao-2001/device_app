@@ -15,5 +15,6 @@ void main() async {
 
   runApp(MaterialApp(
     home: SplashScreen(initialUser: user),
+    debugShowCheckedModeBanner: false,
   ));
 }
