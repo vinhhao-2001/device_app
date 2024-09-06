@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:device_app/data/api/local/db_helper/database_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
 
-import '../../../model/app_usage_info_model.dart';
-import '../../../model/device_info_model.dart';
-import '../../../model/monitor_settings_model.dart';
+import '../../../../core/utils/local_notification.dart';
+import '../../../../model/app_usage_info_model.dart';
+import '../../../../model/device_info_model.dart';
+import '../../../../model/monitor_settings_model.dart';
 
 class ParentFirebaseApi {
   // yêu cầu lấy thông tin thiết bị của phụ huynh
@@ -64,9 +66,32 @@ class ParentFirebaseApi {
         appList
             .add(AppUsageInfoModel.fromMap(Map<String, dynamic>.from(value)));
       });
+      await DatabaseHelper().insertAppList(appList);
       return appList;
     } else {
       throw 'Chưa có danh sách ứng dụng của trẻ';
+    }
+  }
+
+  // Gửi thông báo khi có thiết bị được cài đặt trên thiết bị của trẻ
+  Future<void> listenChildAppInstalled() async {
+    try {
+      DatabaseReference reference =
+          FirebaseDatabase.instance.ref().child('appInstalled');
+      reference.onValue.listen((data) async {
+        final map = data.snapshot.value as Map<dynamic, dynamic>;
+        final event = map['event'];
+        final packageName = map['packageName'];
+        if (event == 'install') {
+          final appName = map['appName'];
+          LocalNotification().showNotification(event, appName);
+        } else {
+          final appName = await DatabaseHelper().getAppList(packageName);
+          LocalNotification().showNotification(event, appName);
+        }
+      });
+    } catch (e) {
+      rethrow;
     }
   }
 }

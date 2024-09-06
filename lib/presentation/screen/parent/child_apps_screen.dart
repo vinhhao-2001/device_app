@@ -17,7 +17,7 @@ class _ChildAppsScreenState extends State<ChildAppsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Installed Apps'),
+        title: const Text('Thời gian sử dụng ứng dụng của trẻ'),
       ),
       body: widget.appList.isEmpty
           ? const Center(child: CircularProgressIndicator())

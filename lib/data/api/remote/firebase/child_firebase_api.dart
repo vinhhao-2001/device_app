@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:firebase_database/firebase_database.dart';
 
-import '../../../model/app_usage_info_model.dart';
-import '../../../model/monitor_settings_model.dart';
-import '../native/native_communicator.dart';
+import '../../../../model/app_usage_info_model.dart';
+import '../../../../model/monitor_settings_model.dart';
+import '../../local/native/native_communicator.dart';
 
 class ChildFirebaseApi {
   // trẻ gửi thông tin thiết bị lên firebase
@@ -54,14 +54,18 @@ class ChildFirebaseApi {
   }
 
   // gửi thông báo ứng dụng bị gỡ hoặc cài đặt lên firebase
-  Future<void> sendNotificationAppInstalled(
-      String event, String appName) async {
+  Future<void> sendAppInstalled(String event, String packageName,
+      {String? appName, String? appIcon}) async {
     try {
       final DatabaseReference reference = FirebaseDatabase.instance.ref();
       Map<String, dynamic> map = {
         'event': event,
-        'appName': appName,
+        'packageName': packageName,
       };
+      if (event == 'install') {
+        map['appName'] = appName;
+        map['appIcon'] = appIcon;
+      }
       await reference.child('appInstalled').set(map);
     } catch (e) {
       rethrow;

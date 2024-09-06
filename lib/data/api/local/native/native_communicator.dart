@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/services.dart';
 
-import '../../../model/app_usage_info_model.dart';
-import '../../../model/device_info_model.dart';
-import '../../../model/monitor_settings_model.dart';
-import '../firebase/child_firebase_api.dart';
+import '../../../../model/app_usage_info_model.dart';
+import '../../../../model/device_info_model.dart';
+import '../../../../model/monitor_settings_model.dart';
+import '../../remote/firebase/child_firebase_api.dart';
 
 class NativeCommunicator {
   // Kiểm tra quyền của phụ huynh
@@ -15,6 +17,8 @@ class NativeCommunicator {
   static const _deviceInfoChannel = MethodChannel('screen_time');
   // lấy thời gian sử dụng thiết bị android
   static const usageChannel = MethodChannel('app_usage_channel');
+  // lắng nghe cài đặt ứng dụng trong android
+  static const installRemoveChannel = MethodChannel('app_installed_channel');
   // các channel
 
   // channel khởi tạo, kiểm tra quyền kiểm soát của phụ huynh
@@ -67,5 +71,28 @@ class NativeCommunicator {
     } catch (e) {
       rethrow;
     }
+  }
+
+  // lắng nghe và gửi ứng dụng được cài đặt hoặc gỡ bỏ lên firebase
+  Future<void> listenAppInstalled() async {
+    installRemoveChannel.setMethodCallHandler((call) async {
+      try {
+        if (call.method == 'appInstalled') {
+          final event = call.arguments['event'];
+          final packageName = call.arguments['packageName'];
+          if (event == 'install') {
+            final appName = call.arguments['appName'];
+            final appIcon = base64Encode(
+                Uint8List.fromList(call.arguments['appIcon']).cast<int>());
+            await ChildFirebaseApi().sendAppInstalled(event, packageName,
+                appName: appName, appIcon: appIcon);
+          } else {
+            await ChildFirebaseApi().sendAppInstalled(event, packageName);
+          }
+        }
+      } catch (e) {
+        rethrow;
+      }
+    });
   }
 }

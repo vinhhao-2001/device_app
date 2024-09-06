@@ -6,7 +6,7 @@ class LocalNotification {
   LocalNotification() {
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     const AndroidInitializationSettings androidInitializationSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/icon_notification');
     const DarwinInitializationSettings iOSInitializationSettings =
         DarwinInitializationSettings(
       requestSoundPermission: true,
@@ -32,7 +32,7 @@ class LocalNotification {
       const NotificationDetails notificationDetails = NotificationDetails(
           android: androidNotificationDetails,
           iOS: DarwinNotificationDetails());
-      await flutterLocalNotificationsPlugin.show(0, 'Quản lý cài đặt ứng dụng',
+      await flutterLocalNotificationsPlugin.show(0, 'Device App',
           'Thiết bị của trẻ đã $event ứng dụng $appName', notificationDetails);
     } catch (e) {
       print(e);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../data/api/firebase/parent_firebase_api.dart';
-import '../../../data/api/native/native_communicator.dart';
+import '../../../data/api/remote/firebase/parent_firebase_api.dart';
+import '../../../data/api/local/native/native_communicator.dart';
 import 'child_apps_screen.dart';
 import 'device_state_screen.dart';
 import 'monitor_settings_screen.dart';
@@ -14,6 +14,12 @@ class ParentScreen extends StatefulWidget {
 }
 
 class _ParentScreenState extends State<ParentScreen> {
+  @override
+  void initState() {
+    super.initState();
+    ParentFirebaseApi().listenChildAppInstalled();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +45,7 @@ class _ParentScreenState extends State<ParentScreen> {
                   ),
                 );
               },
-              child: const Text('Cài đặt giám sát ứng dụng'),
+              child: const Text('Cài đặt giám sát thiết bị'),
             ),
             const SizedBox(height: 30),
             ElevatedButton(
@@ -58,6 +64,7 @@ class _ParentScreenState extends State<ParentScreen> {
               onPressed: () async {
                 // lấy thời gian sử dụng ứng dụng trên firebase
                 final appList = await ParentFirebaseApi().getAppsInfo();
+                appList.sort((a, b) => b.usageTime.compareTo(a.usageTime));
                 if (!(context).mounted) return;
                 Navigator.push(
                   context,
@@ -68,9 +75,9 @@ class _ParentScreenState extends State<ParentScreen> {
               child: const Text('Xem thời gian sử dụng thiết bị'),
             ),
             const SizedBox(height: 30),
-            TextButton(
+            ElevatedButton(
               onPressed: () {},
-              child: const Text('Lịch sử gỡ bỏ và cài đặt các ứng dụng'),
+              child: const Text('Lịch sử cài đặt ứng dụng của trẻ'),
             )
           ],
         ),

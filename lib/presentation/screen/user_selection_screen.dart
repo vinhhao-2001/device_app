@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../data/api/native/native_communicator.dart';
+import '../../data/api/local/native/native_communicator.dart';
 import 'child/children_screen.dart';
 import 'parent/parent_screen.dart';
 

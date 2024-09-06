@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../core/utils/local_notification.dart';
-import '../../../data/api/firebase/child_firebase_api.dart';
-import '../../../data/api/native/native_communicator.dart';
+import '../../../data/api/remote/firebase/child_firebase_api.dart';
+import '../../../data/api/local/native/native_communicator.dart';
 import '../../../model/monitor_settings_model.dart';
 import 'children_monitor_screen.dart';
-
-const installRemoveChannel = MethodChannel('app_installed_channel');
 
 class ChildrenScreen extends StatefulWidget {
   final String userType;
@@ -27,32 +24,18 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
   }
 
   Future<void> _initialize() async {
+    await requestNotificationPermission();
     // Giám sát thiết bị
     modelView = await ChildFirebaseApi().monitorSettingChildDevice();
     // Thông tin thiết bị
-    await ChildFirebaseApi().sendDeviceInfo();
+    ChildFirebaseApi().sendDeviceInfo();
     // Lắng nghe ứng dụng cài đặt hoặc gỡ bỏ
-    installRemoveChannel.setMethodCallHandler(_handleAppInstall);
-    await requestNotificationPermission();
-  }
-
-  Future<void> _handleAppInstall(MethodCall call) async {
-    switch (call.method) {
-      case 'appInstalled':
-        final event = call.arguments['event'];
-        final appName = call.arguments['appName'];
-        ChildFirebaseApi().sendNotificationAppInstalled(event, appName);
-        LocalNotification().showNotification(event, appName);
-        break;
-      default:
-        throw MissingPluginException('Not implemented');
-    }
+    NativeCommunicator().listenAppInstalled();
   }
 
   Future<void> requestNotificationPermission() async {
     var status = await Permission.notification.status;
     if (status.isDenied) {
-      // Nếu quyền chưa được cấp, yêu cầu quyền
       await Permission.notification.request();
     }
   }

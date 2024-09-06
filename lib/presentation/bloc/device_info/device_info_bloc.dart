@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/api/firebase/parent_firebase_api.dart';
+import '../../../data/api/remote/firebase/parent_firebase_api.dart';
 import '../../../model/device_info_model.dart';
 
 part 'device_info_event.dart';

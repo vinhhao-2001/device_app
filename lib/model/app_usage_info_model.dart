@@ -13,6 +13,7 @@ class AppUsageInfoModel {
     required this.icon,
     required this.usageTime,
   });
+
   factory AppUsageInfoModel.fromJson(Map<String, dynamic> map) {
     String iconBase64 =
         base64Encode(Uint8List.fromList(map['icon'].cast<int>()));

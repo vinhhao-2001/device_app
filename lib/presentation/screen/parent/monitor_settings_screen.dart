@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../data/api/firebase/parent_firebase_api.dart';
+import '../../../data/api/remote/firebase/parent_firebase_api.dart';
 import '../../../model/monitor_settings_model.dart';
 
 class MonitoringSettingsScreen extends StatefulWidget {
