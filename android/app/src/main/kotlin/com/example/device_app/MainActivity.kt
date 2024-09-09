@@ -19,66 +19,22 @@ class MainActivity : FlutterActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-
+        // Thời gian sử dụng ứng dụng
         val appUsageChannel = AppUsageChannel(this)
         appUsageChannel.configureChannel(flutterEngine)
+
+        //lắng nghe ứng dụng cài đặt hoặc gỡ bỏ
+        val appInstalledChannel = AppInstalledChannel(this)
+        appInstalledChannel.configureChannel(flutterEngine)
+
+        // tác vụ chạy ngầm
+
+
+        //
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             SCREEN_TIME_CHANNEL
         ).setMethodCallHandler { call, result ->
         }
-
-        val filter = IntentFilter()
-        filter.addAction(Intent.ACTION_PACKAGE_ADDED)
-        filter.addAction(Intent.ACTION_PACKAGE_REMOVED)
-        filter.addDataScheme("package")
-        registerReceiver(appInstalledReceiver, filter)
-    }
-
-    private val appInstalledReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val action = intent?.action
-            val packageName = intent?.data?.schemeSpecificPart
-            if (packageName != null && context != null) {
-                when (action) {
-                    Intent.ACTION_PACKAGE_ADDED -> {
-                        // Xử lý khi ứng dụng được cài đặt
-                        val appName = context?.packageManager?.getApplicationLabel(
-                            context.packageManager.getApplicationInfo(packageName, 0)
-                        ).toString()
-                        val appIcon = context?.packageManager?.getApplicationIcon(
-                            context.packageManager.getApplicationInfo(packageName, 0)
-                        )
-                        // Drawable icon = UsageInfoHandler(context).drawableToByteArray(appIcon!!)
-                        sendAppInstalledEvent("cài đặt", packageName, appName, appIcon)
-                        Log.d("MainActivity", "App installed: $appIcon")
-                    }
-
-                    Intent.ACTION_PACKAGE_REMOVED -> {
-                        // Xử lý khi ứng dụng bị xóa
-                        val appName = packageName
-                        sendAppInstalledEvent("gỡ bỏ", packageName)
-                    }
-                }
-            }
-        }
-    }
-
-    private fun sendAppInstalledEvent(
-        eventType: String,
-        packageName: String,
-        appName: String? = null,
-        appIcon: Drawable? = null
-    ) {
-        val event = mutableMapOf<String, Any>(
-            "event" to eventType,
-            "packageName" to packageName,
-        )
-        appName?.let { event["appName"] = it }
-        appIcon?.let { event["appIcon"] = UsageInfoHandler(this).drawableToByteArray(it) }
-        MethodChannel(
-            flutterEngine!!.dartExecutor.binaryMessenger,
-            APP_INSTASLLED_CHANNEL
-        ).invokeMethod("appInstalled", event)
     }
 }

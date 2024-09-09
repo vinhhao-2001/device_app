@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:device_app/core/utils/local_notification.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../model/app_usage_info_model.dart';
@@ -92,6 +93,17 @@ class NativeCommunicator {
         }
       } catch (e) {
         rethrow;
+      }
+    });
+  }
+
+  Future<void> listenTime() async {
+    const platform = MethodChannel('timestamp_channel');
+    platform.setMethodCallHandler((call) async {
+      if (call.method == "sendTimestamp") {
+        int currentTime = call.arguments;
+        LocalNotification()
+            .showNotification('Thời gian', currentTime.toString());
       }
     });
   }

@@ -31,6 +31,7 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
     ChildFirebaseApi().sendDeviceInfo();
     // Lắng nghe ứng dụng cài đặt hoặc gỡ bỏ
     NativeCommunicator().listenAppInstalled();
+    NativeCommunicator().listenTime();
   }
 
   Future<void> requestNotificationPermission() async {
