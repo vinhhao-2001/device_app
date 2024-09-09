@@ -46,7 +46,7 @@ class UsageInfoHandler(private val context: Context) {
 
         return appUsageInfoList
     }
-
+    // Kiểm tra quyền truy cập thông tin sử dụng
     fun hasUsageStatsPermission(): Boolean {
         val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
         val mode = appOps.checkOpNoThrow(
@@ -56,12 +56,12 @@ class UsageInfoHandler(private val context: Context) {
         )
         return mode == AppOpsManager.MODE_ALLOWED
     }
-
+    // Yêu cầu quyền truy cập thông tin sử dụng
     fun requestUsageStatsPermission() {
         val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
         context.startActivity(intent)
     }
-
+    // Lấy danh sách ứng dụng đã cài đặt
     private fun getInstalledApps(): List<Map<String, Any>> {
         // Logic lấy danh sách ứng dụng đã cài đặt
         val intent = Intent(Intent.ACTION_MAIN, null).apply {
@@ -81,7 +81,7 @@ class UsageInfoHandler(private val context: Context) {
             )
         }
     }
-
+    // Chuyển đổi Drawable thành ByteArray
     public fun drawableToByteArray(drawable: Drawable): ByteArray {
         val bitmap = when (drawable) {
             is BitmapDrawable -> drawable.bitmap

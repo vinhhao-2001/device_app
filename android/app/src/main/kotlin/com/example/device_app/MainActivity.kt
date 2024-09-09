@@ -23,18 +23,16 @@ class MainActivity : FlutterActivity() {
         val appUsageChannel = AppUsageChannel(this)
         appUsageChannel.configureChannel(flutterEngine)
 
-        //lắng nghe ứng dụng cài đặt hoặc gỡ bỏ
+        // lắng nghe ứng dụng cài đặt hoặc gỡ bỏ
         val appInstalledChannel = AppInstalledChannel(this)
         appInstalledChannel.configureChannel(flutterEngine)
 
-        // tác vụ chạy ngầm
-
-
-        //
+        // Lấy thông tin thiết bị
         MethodChannel(
             flutterEngine.dartExecutor.binaryMessenger,
             SCREEN_TIME_CHANNEL
         ).setMethodCallHandler { call, result ->
         }
     }
+
 }
