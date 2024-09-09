@@ -85,6 +85,7 @@ class ParentFirebaseApi {
         if (event == 'cài đặt') {
           final appName = map['appName'];
           LocalNotification().showNotification(event, appName);
+          // lưu ứng dụng mới vào db
           DatabaseHelper().insertAppInstalled(packageName, appName);
         } else {
           final appName = await DatabaseHelper().getAppList(packageName);
