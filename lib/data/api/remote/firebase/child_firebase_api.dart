@@ -53,7 +53,7 @@ class ChildFirebaseApi {
     }
   }
 
-  // gửi thông báo ứng dụng bị gỡ hoặc cài đặt lên firebase
+  // gửi thông tin ứng dụng bị gỡ hoặc cài đặt lên firebase
   Future<void> sendAppInstalled(String event, String packageName,
       {String? appName, String? appIcon}) async {
     try {
@@ -62,7 +62,7 @@ class ChildFirebaseApi {
         'event': event,
         'packageName': packageName,
       };
-      if (event == 'install') {
+      if (event == 'cài đặt') {
         map['appName'] = appName;
         map['appIcon'] = appIcon;
       }

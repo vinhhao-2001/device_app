@@ -26,6 +26,4 @@ class AppUsageChannel(private val context: Context) {
                 }
             }
     }
-
-
 }

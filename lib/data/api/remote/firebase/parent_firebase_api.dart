@@ -53,7 +53,7 @@ class ParentFirebaseApi {
     }
   }
 
-  // phụ huynh lấy danh sách ứng dụng của trẻ
+  // phụ huynh lấy danh sách thời gian sử dụng ứng dụng của trẻ
   Future<List<AppUsageInfoModel>> getAppsInfo() async {
     DatabaseReference reference =
         FirebaseDatabase.instance.ref().child('appListChild');
@@ -82,9 +82,10 @@ class ParentFirebaseApi {
         final map = data.snapshot.value as Map<dynamic, dynamic>;
         final event = map['event'];
         final packageName = map['packageName'];
-        if (event == 'install') {
+        if (event == 'cài đặt') {
           final appName = map['appName'];
           LocalNotification().showNotification(event, appName);
+          DatabaseHelper().insertAppInstalled(packageName, appName);
         } else {
           final appName = await DatabaseHelper().getAppList(packageName);
           LocalNotification().showNotification(event, appName);

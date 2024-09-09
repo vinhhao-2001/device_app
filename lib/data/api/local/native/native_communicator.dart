@@ -80,7 +80,7 @@ class NativeCommunicator {
         if (call.method == 'appInstalled') {
           final event = call.arguments['event'];
           final packageName = call.arguments['packageName'];
-          if (event == 'install') {
+          if (event == 'cài đặt') {
             final appName = call.arguments['appName'];
             final appIcon = base64Encode(
                 Uint8List.fromList(call.arguments['appIcon']).cast<int>());

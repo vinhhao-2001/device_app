@@ -50,14 +50,14 @@ class MainActivity : FlutterActivity() {
                             context.packageManager.getApplicationInfo(packageName, 0)
                         )
                         // Drawable icon = UsageInfoHandler(context).drawableToByteArray(appIcon!!)
-                        sendAppInstalledEvent("install", packageName, appName, appIcon)
+                        sendAppInstalledEvent("cài đặt", packageName, appName, appIcon)
                         Log.d("MainActivity", "App installed: $appIcon")
                     }
 
                     Intent.ACTION_PACKAGE_REMOVED -> {
                         // Xử lý khi ứng dụng bị xóa
                         val appName = packageName
-                        sendAppInstalledEvent("remove", packageName)
+                        sendAppInstalledEvent("gỡ bỏ", packageName)
                     }
                 }
             }
