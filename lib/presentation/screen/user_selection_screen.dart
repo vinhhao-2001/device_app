@@ -7,9 +7,14 @@ import '../../data/api/local/native/native_communicator.dart';
 import 'child/children_screen.dart';
 import 'parent/parent_screen.dart';
 
-class UserSelectionScreen extends StatelessWidget {
+class UserSelectionScreen extends StatefulWidget {
   const UserSelectionScreen({super.key});
 
+  @override
+  State<UserSelectionScreen> createState() => _UserSelectionScreenState();
+}
+
+class _UserSelectionScreenState extends State<UserSelectionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,14 +44,12 @@ class UserSelectionScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 if (Platform.isIOS) await NativeCommunicator().initChannel();
+                if (!context.mounted) return;
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const ChildrenScreen()));
                 final SharedPreferences prefs =
                     await SharedPreferences.getInstance();
                 await prefs.setInt('user', 2);
-                if (!context.mounted) return;
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const ChildrenScreen(userType: 'Trẻ')));
               },
               child: const Text('Trẻ'),
             ),

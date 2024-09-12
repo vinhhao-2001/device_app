@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'child/children_screen.dart';
 import 'parent/parent_screen.dart';
 import 'user_selection_screen.dart';
 
 class SplashScreen extends StatefulWidget {
-  final int initialUser;
-
-  const SplashScreen({super.key, required this.initialUser});
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -15,23 +14,30 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!(context).mounted) return;
-      if (widget.initialUser == 0) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (_) => const UserSelectionScreen()));
-      } else if (widget.initialUser == 1) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const ParentScreen()));
-      } else if (widget.initialUser == 2) {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (_) => const ChildrenScreen(userType: 'Trẻ')));
-      }
+  void initState() {
+    super.initState();
+    // màn hình chờ
+    Future.delayed(const Duration(seconds: 1), () async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final int user = prefs.getInt('user') ?? 0;
+      _navigateScreen(user);
     });
+  }
+  // chuyển trang
+  Future<void> _navigateScreen(int user) async {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => user == 1
+            ? const ParentScreen()
+            : user == 2
+                ? const ChildrenScreen()
+                : const UserSelectionScreen(),
+      ),
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
         child: Text(

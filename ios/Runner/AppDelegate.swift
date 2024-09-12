@@ -23,9 +23,11 @@ import Firebase
         
         //  khai báo channel
         let initChannel = FlutterMethodChannel(name: "init_channel", binaryMessenger: controller.binaryMessenger)
-        let methodChannel = FlutterMethodChannel(name: "screen_time", binaryMessenger: controller.binaryMessenger)
+        let deviceInfoChannel = FlutterMethodChannel(name: "device_info_channel", binaryMessenger: controller.binaryMessenger)
         let appLimitChannel = FlutterMethodChannel(name: "app_limit_channel", binaryMessenger: controller.binaryMessenger)
         let appMonitorChannel = FlutterMethodChannel(name: "app_monitor_channel", binaryMessenger: controller.binaryMessenger)
+
+        // Lúc khởi tạo, kiểm tra quyền kiểm soát của phụ huynh
         initChannel.setMethodCallHandler {
             (call: FlutterMethodCall, result: @escaping FlutterResult) in
             if call.method == "init" {
@@ -33,31 +35,31 @@ import Firebase
                 result(true)
             }
         }
-        methodChannel.setMethodCallHandler {
+        // Lấy thông tin thiết bị của trẻ
+        deviceInfoChannel.setMethodCallHandler {
             (call: FlutterMethodCall, result: @escaping FlutterResult) in
             switch call.method {
-            case "blockApp":
-                self.presentSwiftUIView(controller: controller)
-            case "deviceInfo":
+            case "getDeviceInfo":
                 self.getDeviceInfo(result: result)
             default:
-                print("Tên channel bị lỗi")
+                 result(FlutterMethodNotImplemented)
             }
         }
         
         appLimitChannel.setMethodCallHandler { (call: FlutterMethodCall, result: @escaping FlutterResult) in
             if call.method == "appLimit" {
                 // Mở giao diện giới hạn ứng dụng
-                DispatchQueue.main.async {
-                    let contentView = ContentView()
-                    let host = UIHostingController(rootView: contentView)
-                    
-                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-                       let rootViewController = windowScene.windows.first?.rootViewController {
-                        rootViewController.present(host, animated: true, completion: nil)
-                    }
-                }
-                result("Opened app limit interface")
+                self.presentSwiftUIView(controller: controller)
+//                DispatchQueue.main.async {
+//                    let contentView = ContentView()
+//                    let host = UIHostingController(rootView: contentView)
+//
+//                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+//                       let rootViewController = windowScene.windows.first?.rootViewController {
+//                        rootViewController.present(host, animated: true, completion: nil)
+//                    }
+//                }
+             result("Opened app limit interface")
             } else {
                 result(FlutterMethodNotImplemented)
             }
@@ -74,13 +76,14 @@ import Firebase
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
-    
+
+    //
     private func presentSwiftUIView(controller: FlutterViewController) {
         let contentView = ContentView()
         let hostingController = UIHostingController(rootView: contentView)
         controller.present(hostingController, animated: true, completion: nil)
     }
-    
+    // kiểm tra quyền kiểm soát của phụ huynh
     private func checkParentalControl() {
         let center = AuthorizationCenter.shared
         Task {
@@ -121,7 +124,8 @@ import Firebase
             }
         }
     }
-    
+
+    // kiểm tra trạng thái đăng nhập tài khoản iCloud
     private func checkICloudStatus() async throws -> Bool {
         return try await withCheckedThrowingContinuation { continuation in
             let container = CKContainer.default()
@@ -164,8 +168,6 @@ import Firebase
             "screenBrightness": "\(screenBrightness)",
             "volume": "\(Int(volume * 100))"
         ]
-        
         result(deviceInfo)
     }
-
 }

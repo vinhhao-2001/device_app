@@ -1,3 +1,4 @@
+import 'package:device_app/presentation/test_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/api/remote/firebase/parent_firebase_api.dart';
@@ -76,7 +77,10 @@ class _ParentScreenState extends State<ParentScreen> {
             ),
             const SizedBox(height: 30),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const TestScreen()));
+              },
               child: const Text('Lịch sử cài đặt ứng dụng của trẻ'),
             )
           ],

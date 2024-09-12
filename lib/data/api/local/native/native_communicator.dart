@@ -1,6 +1,4 @@
 import 'dart:convert';
-
-import 'package:device_app/core/utils/local_notification.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../model/app_usage_info_model.dart';
@@ -15,14 +13,16 @@ class NativeCommunicator {
   static const MethodChannel _monitorChannel =
       MethodChannel('app_monitor_channel');
   // lấy thông tin thiết bị
-  static const _deviceInfoChannel = MethodChannel('screen_time');
+  static const _deviceInfoChannel = MethodChannel('device_info_channel');
   // lấy thời gian sử dụng thiết bị android
   static const usageChannel = MethodChannel('app_usage_channel');
   // lắng nghe cài đặt ứng dụng trong android
   static const installRemoveChannel = MethodChannel('app_installed_channel');
+  // giới hạn ứng dụng
+  static const _appLimitChannel = MethodChannel('app_limit_channel');
   // các channel
 
-  // channel khởi tạo, kiểm tra quyền kiểm soát của phụ huynh
+  // channel khởi tạo, kiểm tra quyền kiểm soát của phụ huynh trên ios
   Future<void> initChannel() async {
     await initPlatform.invokeMethod('init');
   }
@@ -56,20 +56,22 @@ class NativeCommunicator {
     }
   }
 
-  // Lấy thông tin thiết bị ios
+  // Lấy thông tin thiết bị ios và android
   Future<DeviceInfoModel> deviceInfoChannel() async {
     try {
-      final result = await _deviceInfoChannel.invokeMethod('deviceInfo');
+      final result = await _deviceInfoChannel.invokeMethod('getDeviceInfo');
       return DeviceInfoModel.fromMap(Map<String, dynamic>.from(result));
     } catch (e) {
       throw ('Lỗi lấy dữ liệu thông tin thiết bị: $e');
     }
   }
 
+  // giới hạn ứng dụng
   Future<void> appLimitChannel() async {
     try {
-      await _deviceInfoChannel.invokeMethod('blockApp');
+      await _appLimitChannel.invokeMethod('appLimit');
     } catch (e) {
+      print(e);
       rethrow;
     }
   }
@@ -93,17 +95,6 @@ class NativeCommunicator {
         }
       } catch (e) {
         rethrow;
-      }
-    });
-  }
-
-  Future<void> listenTime() async {
-    const platform = MethodChannel('timestamp_channel');
-    platform.setMethodCallHandler((call) async {
-      if (call.method == "sendTimestamp") {
-        int currentTime = call.arguments;
-        LocalNotification()
-            .showNotification('Thời gian', currentTime.toString());
       }
     });
   }

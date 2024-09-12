@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../../core/utils/local_notification.dart';
 import '../../../data/api/remote/firebase/child_firebase_api.dart';
 import '../../../data/api/local/native/native_communicator.dart';
 import '../../../model/monitor_settings_model.dart';
+import '../../test_screen.dart';
 import 'children_monitor_screen.dart';
 
 class ChildrenScreen extends StatefulWidget {
-  final String userType;
-  const ChildrenScreen({super.key, required this.userType});
+  const ChildrenScreen({super.key});
 
   @override
   State<ChildrenScreen> createState() => _ChildrenScreenState();
@@ -31,7 +30,6 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
     ChildFirebaseApi().sendDeviceInfo();
     // Lắng nghe ứng dụng cài đặt hoặc gỡ bỏ
     NativeCommunicator().listenAppInstalled();
-    NativeCommunicator().listenTime();
   }
 
   Future<void> requestNotificationPermission() async {
@@ -66,9 +64,9 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
             ),
             const SizedBox(height: 20),
             // Thông tin userType
-            Text(
-              'Welcome, ${widget.userType}!',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            const Text(
+              'Welcome,Trẻ!',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
             // Tạo các nút trong Card để đẹp hơn
@@ -96,7 +94,12 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         onTap: () async {
-                          await NativeCommunicator().appLimitChannel();
+                          // await NativeCommunicator().appLimitChannel();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const TestScreen()),
+                          );
                         },
                       ),
                       const SizedBox(height: 10),
@@ -148,7 +151,8 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         onTap: () {
-                          LocalNotification().showNotification('a', 'b');
+                          NativeCommunicator().appLimitChannel();
+                          //LocalNotification().showNotification('a', 'b');
                         },
                       ),
                     ],
