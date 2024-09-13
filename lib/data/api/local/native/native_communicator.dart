@@ -8,23 +8,23 @@ import '../../remote/firebase/child_firebase_api.dart';
 
 class NativeCommunicator {
   // Kiểm tra quyền của phụ huynh
-  static const initPlatform = MethodChannel('init_channel');
+  static const _initPlatform = MethodChannel('init_channel');
   // cài đặt giám sát
   static const MethodChannel _monitorChannel =
       MethodChannel('app_monitor_channel');
   // lấy thông tin thiết bị
   static const _deviceInfoChannel = MethodChannel('device_info_channel');
   // lấy thời gian sử dụng thiết bị android
-  static const usageChannel = MethodChannel('app_usage_channel');
+  static const _usageChannel = MethodChannel('app_usage_channel');
   // lắng nghe cài đặt ứng dụng trong android
-  static const installRemoveChannel = MethodChannel('app_installed_channel');
+  static const _installRemoveChannel = MethodChannel('app_installed_channel');
   // giới hạn ứng dụng
   static const _appLimitChannel = MethodChannel('app_limit_channel');
   // các channel
 
   // channel khởi tạo, kiểm tra quyền kiểm soát của phụ huynh trên ios
   Future<void> initChannel() async {
-    await initPlatform.invokeMethod('init');
+    await _initPlatform.invokeMethod('init');
   }
 
   // channel giám sát thiết bị ios
@@ -44,7 +44,7 @@ class NativeCommunicator {
   Future<List<AppUsageInfoModel>> usageStatsChannel() async {
     try {
       final List<dynamic> apps =
-          await usageChannel.invokeMethod('getAppUsageInfo');
+          await _usageChannel.invokeMethod('getAppUsageInfo');
       final appList = apps
           .map((app) =>
               AppUsageInfoModel.fromJson(Map<String, dynamic>.from(app)))
@@ -78,7 +78,7 @@ class NativeCommunicator {
 
   // lắng nghe và gửi ứng dụng được cài đặt hoặc gỡ bỏ lên firebase
   Future<void> listenAppInstalled() async {
-    installRemoveChannel.setMethodCallHandler((call) async {
+    _installRemoveChannel.setMethodCallHandler((call) async {
       try {
         if (call.method == 'appInstalled') {
           final event = call.arguments['event'];
