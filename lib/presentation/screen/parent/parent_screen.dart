@@ -1,8 +1,8 @@
-import 'package:device_app/presentation/test_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../../data/api/remote/firebase/parent_firebase_api.dart';
 import '../../../data/api/local/native/native_communicator.dart';
+import '../../test_screen.dart';
 import 'child_apps_screen.dart';
 import 'device_state_screen.dart';
 import 'monitor_settings_screen.dart';
@@ -18,7 +18,6 @@ class _ParentScreenState extends State<ParentScreen> {
   @override
   void initState() {
     super.initState();
-    ParentFirebaseApi().listenChildAppInstalled();
   }
 
   @override

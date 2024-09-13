@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_app/core/utils/background_service.dart';
 import 'package:device_app/core/widget/lifecycle_observer.dart';
 import 'package:flutter/material.dart';
 
@@ -41,7 +42,14 @@ class _TestScreenState extends LifecycleObserver<TestScreen> {
                   exit(0);
                 },
                 child: const Text('Thoát'),
-              )
+              ),
+              const SizedBox(height: 30),
+              TextButton(
+                onPressed: () async {
+                  initializeService();
+                },
+                child: const Text('a'),
+              ),
             ],
           ),
         ),

@@ -29,7 +29,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                Navigator.push(
+                Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (_) => const ParentScreen(),
@@ -45,7 +45,7 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
               onPressed: () async {
                 if (Platform.isIOS) await NativeCommunicator().initChannel();
                 if (!context.mounted) return;
-                Navigator.push(context,
+                Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (_) => const ChildrenScreen()));
                 final SharedPreferences prefs =
                     await SharedPreferences.getInstance();

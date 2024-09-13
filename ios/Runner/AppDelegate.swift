@@ -5,6 +5,7 @@ import FamilyControls
 import CloudKit
 import AVFoundation
 import Firebase
+import flutter_background_service_ios
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -15,6 +16,7 @@ import Firebase
         if #available(iOS 10.0, *) {
           UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
         }
+         SwiftFlutterBackgroundServicePlugin.taskIdentifier = "your.custom.task.identifier"
 
         let controller = window?.rootViewController as! FlutterViewController
         
