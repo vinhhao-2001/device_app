@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:device_app/core/utils/local_notification.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../model/app_usage_info_model.dart';
@@ -83,6 +84,7 @@ class NativeCommunicator {
         if (call.method == 'appInstalled') {
           final event = call.arguments['event'];
           final packageName = call.arguments['packageName'];
+          LocalNotification().showNotification(event, packageName);
           if (event == 'cài đặt') {
             final appName = call.arguments['appName'];
             final appIcon = base64Encode(
@@ -94,7 +96,7 @@ class NativeCommunicator {
           }
         }
       } catch (e) {
-        rethrow;
+        print('Lỗi gửi ứng dụng:  $e');
       }
     });
   }

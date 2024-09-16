@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:device_app/core/utils/utils.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../../../../model/app_usage_info_model.dart';
@@ -46,7 +47,10 @@ class ChildFirebaseApi {
       final DatabaseReference reference = FirebaseDatabase.instance.ref();
 
       for (var app in appList) {
-        await reference.child('appListChild').child(app.name).set(app.toMap());
+        await reference
+            .child('appListChild')
+            .child(Utils().sanitizeKey(app.packageName))
+            .set(app.toMap());
       }
     } catch (e) {
       rethrow;
@@ -61,10 +65,19 @@ class ChildFirebaseApi {
       Map<String, dynamic> map = {
         'event': event,
         'packageName': packageName,
+        'time': DateTime.now().toIso8601String(),
       };
       if (event == 'cài đặt') {
         map['appName'] = appName;
         map['appIcon'] = appIcon;
+        reference
+            .child('appListChild')
+            .child(Utils().sanitizeKey(packageName))
+            .update({
+          'packageName': packageName,
+          'name': appName,
+          'icon': appIcon,
+        });
       }
       await reference.child('appInstalled').set(map);
     } catch (e) {

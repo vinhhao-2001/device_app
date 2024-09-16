@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:device_app/core/utils/background_service.dart';
-import 'package:device_app/core/widget/lifecycle_observer.dart';
 import 'package:flutter/material.dart';
+
+import '../core/widget/lifecycle_observer.dart';
+import '../data/api/local/background_service/children_service.dart';
 
 class TestScreen extends StatefulWidget {
   const TestScreen({super.key});
@@ -18,7 +19,7 @@ class _TestScreenState extends LifecycleObserver<TestScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         try {
-          didPop = await confirmExit(context, 'nameScreen');
+          didPop = await confirmExit(context, 'Background Screen');
           if (didPop) {
             if (!(context).mounted) return;
             Navigator.of(context).pop();
@@ -29,7 +30,7 @@ class _TestScreenState extends LifecycleObserver<TestScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Test Screen'),
+          title: const Text('Khởi động chạy nền'),
         ),
         body: Center(
           child: Column(
@@ -46,9 +47,9 @@ class _TestScreenState extends LifecycleObserver<TestScreen> {
               const SizedBox(height: 30),
               TextButton(
                 onPressed: () async {
-                  initializeService();
+                  await initializeService();
                 },
-                child: const Text('a'),
+                child: const Text('Bắt đầu chạy nền'),
               ),
             ],
           ),

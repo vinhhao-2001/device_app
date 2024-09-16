@@ -4,7 +4,6 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../data/api/remote/firebase/child_firebase_api.dart';
 import '../../../data/api/local/native/native_communicator.dart';
 import '../../../model/monitor_settings_model.dart';
-import '../../test_screen.dart';
 import 'children_monitor_screen.dart';
 
 class ChildrenScreen extends StatefulWidget {
@@ -57,19 +56,16 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Thêm hình ảnh minh họa
             Image.asset(
               'assets/images/icon_notification.png',
               height: 150,
             ),
             const SizedBox(height: 20),
-            // Thông tin userType
             const Text(
               'Welcome,Trẻ!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
-            // Tạo các nút trong Card để đẹp hơn
             Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
@@ -79,11 +75,10 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: SizedBox(
-                  width: double.infinity, // Đảm bảo Card chiếm hết chiều rộng
+                  width: double.infinity,
                   child: ListView(
-                    shrinkWrap: true, // Tránh chiếm quá nhiều không gian
+                    shrinkWrap: true,
                     children: [
-                      // Nút "Ứng dụng bị giới hạn"
                       ListTile(
                         title: const Text(
                           'Ứng dụng bị giới hạn',
@@ -94,16 +89,16 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         onTap: () async {
-                          // await NativeCommunicator().appLimitChannel();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const TestScreen()),
-                          );
+                          // giới hạn ứng dụng
+                         //  await NativeCommunicator().appLimitChannel();
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (_) => const TestScreen()),
+                          // );
                         },
                       ),
                       const SizedBox(height: 10),
-                      // Nút "Nội dung được phép"
                       ListTile(
                         title: const Text(
                           'Nội dung được phép',
@@ -125,7 +120,6 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                         },
                       ),
                       const SizedBox(height: 10),
-                      // Nút "Gửi thời gian sử dụng thiết bị"
                       ListTile(
                         title: const Text(
                           'Gửi thời gian sử dụng thiết bị',
@@ -140,7 +134,6 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                         },
                       ),
                       const SizedBox(height: 10),
-                      // Nút "Gửi thông báo ứng dụng cài đặt"
                       ListTile(
                         title: const Text(
                           'Gửi thông báo ứng dụng cài đặt',
@@ -151,8 +144,7 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         onTap: () {
-                          NativeCommunicator().appLimitChannel();
-                          //LocalNotification().showNotification('a', 'b');
+                         //  NativeCommunicator().appLimitChannel();
                         },
                       ),
                     ],

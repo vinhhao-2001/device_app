@@ -2,6 +2,7 @@ package com.hao.device_app
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import android.content.Intent
 
 class MainActivity : FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
@@ -13,6 +14,9 @@ class MainActivity : FlutterActivity() {
         // lắng nghe ứng dụng cài đặt hoặc gỡ bỏ
         val appInstalledChannel = AppInstalledChannel(this)
         appInstalledChannel.configureChannel(flutterEngine)
+
+//        val serviceIntent = Intent(this, AppEventService::class.java)
+//        startService(serviceIntent)
 
         // Lấy thông tin thiết bị
         val deviceInfoChannel = DeviceInfoChannel(this)

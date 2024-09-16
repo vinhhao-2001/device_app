@@ -4,6 +4,7 @@ import 'package:device_app/data/api/local/db_helper/database_helper.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../../../../core/utils/local_notification.dart';
+import '../../../../core/utils/utils.dart';
 import '../../../../model/app_usage_info_model.dart';
 import '../../../../model/device_info_model.dart';
 import '../../../../model/monitor_settings_model.dart';
@@ -66,7 +67,6 @@ class ParentFirebaseApi {
         appList
             .add(AppUsageInfoModel.fromMap(Map<String, dynamic>.from(value)));
       });
-      await DatabaseHelper().insertAppList(appList);
       return appList;
     } else {
       throw 'Chưa có danh sách ứng dụng của trẻ';
@@ -82,16 +82,38 @@ class ParentFirebaseApi {
         final map = data.snapshot.value as Map<dynamic, dynamic>;
         final event = map['event'];
         final packageName = map['packageName'];
+        final time = map['time'];
         if (event == 'cài đặt') {
           final appName = map['appName'];
-          LocalNotification().showNotification(event, appName);
-          // lưu ứng dụng mới vào db
-          DatabaseHelper().insertAppInstalled(packageName, appName);
+          final appIcon = map['appIcon'];
+          await LocalNotification().showNotification(event, appName);
+          // lưu ứng dụng vào danh sách
+          await DatabaseHelper()
+              .insertAppChildInstallOrRemove(event, appName, appIcon, time);
         } else {
-          final appName = await DatabaseHelper().getAppList(packageName);
-          LocalNotification().showNotification(event, appName);
+          final app = await getAppName(packageName);
+          await LocalNotification().showNotification(event, app.name);
+          await DatabaseHelper()
+              .insertAppChildInstallOrRemove(event, app.name, app.icon, time);
         }
       });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<AppUsageInfoModel> getAppName(String packageName) async {
+    try {
+      DatabaseReference reference =
+          FirebaseDatabase.instance.ref().child('appListChild');
+      DataSnapshot snapshot =
+          await reference.child(Utils().sanitizeKey(packageName)).get();
+      if (snapshot.exists) {
+        final data = snapshot.value as Map<dynamic, dynamic>;
+        return AppUsageInfoModel.fromMap(Map<String, dynamic>.from(data));
+      } else {
+        throw 'Không tìm thấy ứng dụng';
+      }
     } catch (e) {
       rethrow;
     }

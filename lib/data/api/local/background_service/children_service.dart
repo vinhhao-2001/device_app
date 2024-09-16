@@ -1,9 +1,8 @@
 import 'dart:async';
 
+import 'package:device_app/data/api/local/native/native_communicator.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
-
-import '../../data/api/remote/firebase/parent_firebase_api.dart';
 
 Future<void> initializeService() async {
   final service = FlutterBackgroundService();
@@ -31,5 +30,5 @@ Future<bool> onIosBackground(ServiceInstance service) async {
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
   await Firebase.initializeApp();
-  await ParentFirebaseApi().listenChildAppInstalled();
+  NativeCommunicator().listenAppInstalled();
 }

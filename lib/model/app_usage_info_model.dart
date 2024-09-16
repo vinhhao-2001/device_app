@@ -39,7 +39,7 @@ class AppUsageInfoModel {
       name: map['name'],
       packageName: map['packageName'],
       icon: map['icon'],
-      usageTime: map['usageTime'],
+      usageTime: map['usageTime'] ?? 0,
     );
   }
 }

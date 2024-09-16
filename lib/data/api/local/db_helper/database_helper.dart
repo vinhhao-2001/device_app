@@ -1,28 +1,39 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../model/app_usage_info_model.dart';
-
 class DatabaseHelper {
-  // lưu danh sách ứng dụng trên firebase
-  Future<void> insertAppList(List<AppUsageInfoModel> appList) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    for (var app in appList) {
-      await preferences.setString(app.packageName, app.name);
+  // Lưu vào danh sách ứng dụng được cài đặt, gỡ bỏ
+  Future<void> insertAppChildInstallOrRemove(
+      String event, String appName, String appIcon, String time) async {
+    try {
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      List<String>? appList =
+          preferences.getStringList('appListInstalled') ?? [];
+      Map<String, String> appData = {
+        'event': event,
+        'appName': appName,
+        'appIcon': appIcon,
+        'time': time,
+      };
+      String appDataJson = jsonEncode(appData);
+
+      appList.add(appDataJson);
+      await preferences.setStringList('appListInstalled', appList);
+    } catch (e) {
+      rethrow;
     }
   }
 
-  Future<void> insertAppInstalled(String packageName, String appName) async {
+  // Lấy dữ liệu từ danh sách ứng dụng
+  Future<List<Map<String, String>>> getAppChildInstallOrRemove() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setString(packageName, appName);
-  }
+    List<String>? appList = preferences.getStringList('appListInstalled') ?? [];
 
-  Future<String> getAppList(String packageName) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String? appName = preferences.getString(packageName);
-    if (appName != null) {
-      return appName;
-    } else {
-      throw 'Không tìm thấy ứng dụng';
-    }
+    // Chuyển đổi chuỗi JSON thành Map
+    List<Map<String, String>> result = appList
+        .map((json) => Map<String, String>.from(jsonDecode(json)))
+        .toList();
+
+    return result;
   }
 }

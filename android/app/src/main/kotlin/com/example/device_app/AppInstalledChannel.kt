@@ -36,8 +36,7 @@ class AppInstalledChannel(private val context: Context) {
                             context.packageManager.getApplicationInfo(packageName, 0)
                         ).toString()
                         val appIcon = context.packageManager.getApplicationIcon(
-                            context.packageManager.getApplicationInfo(packageName, 0)
-                        )
+                            context.packageManager.getApplicationInfo(packageName, 0))
                         sendAppInstalledEvent("cài đặt", packageName, appName, appIcon)
                         Log.d("AppInstalledChannel", "App installed: $appIcon")
                     }

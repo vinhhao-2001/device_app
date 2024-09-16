@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
+import '../../../data/api/local/background_service/parent_service.dart';
 import '../../../data/api/remote/firebase/parent_firebase_api.dart';
 import '../../../data/api/local/native/native_communicator.dart';
-import '../../test_screen.dart';
 import 'child_apps_screen.dart';
 import 'device_state_screen.dart';
+import 'history_install_app_screen.dart';
 import 'monitor_settings_screen.dart';
 
 class ParentScreen extends StatefulWidget {
@@ -18,6 +19,7 @@ class _ParentScreenState extends State<ParentScreen> {
   @override
   void initState() {
     super.initState();
+    initializeService();
   }
 
   @override
@@ -78,7 +80,9 @@ class _ParentScreenState extends State<ParentScreen> {
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const TestScreen()));
+                  MaterialPageRoute(
+                      builder: (_) => const HistoryInstallAppScreen()),
+                );
               },
               child: const Text('Lịch sử cài đặt ứng dụng của trẻ'),
             )
