@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:device_app/data/api/local/native/native_communicator.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 
 Future<void> initializeService() async {
