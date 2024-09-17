@@ -11,7 +11,6 @@ class DeviceInfoState extends Equatable {
 
   DeviceInfoState copyWith({
     final DeviceInfoModel? model,
-    final String? request,
     final String? message,
   }) {
     return DeviceInfoState(

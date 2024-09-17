@@ -15,8 +15,9 @@ class MainActivity : FlutterActivity() {
         val appInstalledChannel = AppInstalledChannel(this)
         appInstalledChannel.configureChannel(flutterEngine)
 
-//        val serviceIntent = Intent(this, AppEventService::class.java)
-//        startService(serviceIntent)
+        // Gửi thông báo ứng dụng cài đặt
+       val serviceIntent = Intent(this, AppEventService::class.java)
+       startService(serviceIntent)
 
         // Lấy thông tin thiết bị
         val deviceInfoChannel = DeviceInfoChannel(this)

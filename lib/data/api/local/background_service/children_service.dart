@@ -26,9 +26,7 @@ Future<void> initializeService() async {
 Future<bool> onIosBackground(ServiceInstance service) async {
   return true;
 }
-
+// bắt đầu chạy ngầm
 @pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
-  await Firebase.initializeApp();
-  NativeCommunicator().listenAppInstalled();
 }

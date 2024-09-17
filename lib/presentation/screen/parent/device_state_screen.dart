@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../bloc/device_info/device_info_bloc.dart';
+import '../../bloc/parent_bloc/device_info/device_info_bloc.dart';
 
 class DeviceStateScreen extends StatefulWidget {
   const DeviceStateScreen({super.key});
@@ -14,7 +14,7 @@ class _DeviceStateScreenState extends State<DeviceStateScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => DeviceInfoBloc()..add(const FetchDeviceInfoEvent()),
+      create: (context) => DeviceInfoBloc()..add(const DeviceInfoEvent()),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Thông tin thiết bị của trẻ'),
@@ -22,11 +22,9 @@ class _DeviceStateScreenState extends State<DeviceStateScreen> {
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: BlocBuilder<DeviceInfoBloc, DeviceInfoState>(
-            buildWhen: (a, b) => a.model != b.model,
+            buildWhen: (a, b) => a.model != b.model || a.message != b.message,
             builder: (context, state) {
-              if (state.model == null && state.message.isEmpty) {
-                return Container();
-              } else {
+              if (state.model != null) {
                 return Table(
                   columnWidths: const {
                     0: FlexColumnWidth(2),
@@ -51,6 +49,12 @@ class _DeviceStateScreenState extends State<DeviceStateScreen> {
                     )
                   ],
                 );
+              } else if (state.message.isNotEmpty) {
+                return Center(
+                  child: Text(state.message),
+                );
+              } else {
+                return const Center(child: CircularProgressIndicator());
               }
             },
           ),

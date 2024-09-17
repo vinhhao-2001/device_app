@@ -2,17 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
+import '../../../core/utils/utils.dart';
 import '../../../model/app_usage_info_model.dart';
 
-class ChildAppsScreen extends StatefulWidget {
+class ChildAppUsageScreen extends StatefulWidget {
   final List<AppUsageInfoModel> appList;
-  const ChildAppsScreen({super.key, required this.appList});
+  const ChildAppUsageScreen({super.key, required this.appList});
 
   @override
-  State<ChildAppsScreen> createState() => _ChildAppsScreenState();
+  State<ChildAppUsageScreen> createState() => _ChildAppUsageScreenState();
 }
 
-class _ChildAppsScreenState extends State<ChildAppsScreen> {
+class _ChildAppUsageScreenState extends State<ChildAppUsageScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,29 +30,10 @@ class _ChildAppsScreenState extends State<ChildAppsScreen> {
                   leading: Image.memory(base64Decode(app.icon),
                       width: 40, height: 40),
                   title: Text(app.name),
-                  subtitle: Text(formatUsageTime(app.usageTime)),
+                  subtitle: Text(Utils().formatUsageTime(app.usageTime)),
                 );
               },
             ),
     );
-  }
-
-  String formatUsageTime(int millis) {
-    Duration duration = Duration(milliseconds: millis);
-    int hours = duration.inHours;
-    int minutes = duration.inMinutes.remainder(60);
-    int seconds = duration.inSeconds.remainder(60);
-
-    List<String> parts = [];
-
-    if (hours > 0) {
-      parts.add("$hours giờ");
-    }
-    if (minutes > 0) {
-      parts.add("$minutes phút");
-    }
-    parts.add("$seconds giây");
-
-    return parts.join(" ");
   }
 }

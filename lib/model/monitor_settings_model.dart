@@ -1,15 +1,15 @@
 class MonitorSettingsModel {
-  bool autoDateAndTime;
-  bool lockAccounts;
-  bool lockPasscode;
-  bool denySiri;
-  bool denyInAppPurchases;
-  int? maximumRating;
-  bool requirePasswordForPurchases;
-  bool denyExplicitContent;
-  bool denyMultiplayerGaming;
-  bool denyMusicService;
-  bool denyAddingFriends;
+  final bool autoDateAndTime;
+  final bool lockAccounts;
+  final bool lockPasscode;
+  final bool denySiri;
+  final bool denyInAppPurchases;
+  final int? maximumRating;
+  final bool requirePasswordForPurchases;
+  final bool denyExplicitContent;
+  final bool denyMultiplayerGaming;
+  final bool denyMusicService;
+  final bool denyAddingFriends;
 
   MonitorSettingsModel({
     required this.autoDateAndTime,
@@ -24,6 +24,36 @@ class MonitorSettingsModel {
     required this.denyMusicService,
     required this.denyAddingFriends,
   });
+
+  MonitorSettingsModel copyWith({
+    bool? autoDateAndTime,
+    bool? lockAccounts,
+    bool? lockPasscode,
+    bool? denySiri,
+    bool? denyInAppPurchases,
+    int? maximumRating,
+    bool? requirePasswordForPurchases,
+    bool? denyExplicitContent,
+    bool? denyMultiplayerGaming,
+    bool? denyMusicService,
+    bool? denyAddingFriends,
+  }) {
+    return MonitorSettingsModel(
+      autoDateAndTime: autoDateAndTime ?? this.autoDateAndTime,
+      lockAccounts: lockAccounts ?? this.lockAccounts,
+      lockPasscode: lockPasscode ?? this.lockPasscode,
+      denySiri: denySiri ?? this.denySiri,
+      denyInAppPurchases: denyInAppPurchases ?? this.denyInAppPurchases,
+      requirePasswordForPurchases:
+          requirePasswordForPurchases ?? this.requirePasswordForPurchases,
+      maximumRating: maximumRating ?? this.maximumRating,
+      denyExplicitContent: denyExplicitContent ?? this.denyExplicitContent,
+      denyMultiplayerGaming:
+          denyMultiplayerGaming ?? this.denyMultiplayerGaming,
+      denyMusicService: denyMusicService ?? this.denyMusicService,
+      denyAddingFriends: denyAddingFriends ?? this.denyAddingFriends,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -43,7 +73,7 @@ class MonitorSettingsModel {
 
   factory MonitorSettingsModel.fromMap(Map<dynamic, dynamic> map) {
     return MonitorSettingsModel(
-      autoDateAndTime: map['autoDateAndTime']?? true,
+      autoDateAndTime: map['autoDateAndTime'] ?? true,
       lockAccounts: map['lockAccounts'] ?? false,
       lockPasscode: map['lockPasscode'] ?? false,
       denySiri: map['denySiri'] ?? false,

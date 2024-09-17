@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
-import '../../../data/api/local/db_helper/database_helper.dart'; // Để định dạng thời gian
+import '../../../core/utils/utils.dart';
+import '../../../data/api/local/db_helper/database_helper.dart';
 
 class HistoryInstallAppScreen extends StatefulWidget {
   const HistoryInstallAppScreen({super.key});
@@ -44,11 +44,6 @@ class _HistoryInstallAppScreenState extends State<HistoryInstallAppScreen> {
     });
   }
 
-  String _formatTime(String isoTime) {
-    DateTime dateTime = DateTime.parse(isoTime);
-    return DateFormat('HH:mm, dd/MM/yyyy').format(dateTime);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,8 +63,8 @@ class _HistoryInstallAppScreenState extends State<HistoryInstallAppScreen> {
 
                 return ListTile(
                   leading: Image.memory(base64Decode(appIcon)),
-                  title:
-                      Text('$appName đã được $event lúc ${_formatTime(time)}'),
+                  title: Text(
+                      '$appName đã được $event lúc ${Utils().formatTime(time)}'),
                 );
               },
             ),

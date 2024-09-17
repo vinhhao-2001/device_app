@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/api/local/background_service/parent_service.dart';
 import '../../../data/api/remote/firebase/parent_firebase_api.dart';
 import '../../../data/api/local/native/native_communicator.dart';
-import 'child_apps_screen.dart';
+import '../../bloc/parent_bloc/monitor_setting/monitor_setting_bloc.dart';
+import 'child_app_usage_screen.dart';
 import 'device_state_screen.dart';
 import 'history_install_app_screen.dart';
 import 'monitor_settings_screen.dart';
@@ -43,7 +45,9 @@ class _ParentScreenState extends State<ParentScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MonitoringSettingsScreen(),
+                    builder: (context) => BlocProvider(
+                        create: (context) => MonitorSettingBloc(),
+                        child: const MonitoringSettingsScreen()),
                   ),
                 );
               },
@@ -52,8 +56,6 @@ class _ParentScreenState extends State<ParentScreen> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () async {
-                await ParentFirebaseApi().requestChildDeviceInfo();
-                if (!(context).mounted) return;
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const DeviceStateScreen()),
@@ -71,7 +73,7 @@ class _ParentScreenState extends State<ParentScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => ChildAppsScreen(appList: appList)),
+                      builder: (_) => ChildAppUsageScreen(appList: appList)),
                 );
               },
               child: const Text('Xem thời gian sử dụng thiết bị'),

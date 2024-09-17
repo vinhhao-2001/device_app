@@ -43,14 +43,18 @@ class ParentFirebaseApi {
 
   // phụ huynh lấy thông tin thiết bị của trẻ
   Future<DeviceInfoModel> getDeviceInfo() async {
-    final DatabaseReference reference =
-        FirebaseDatabase.instance.ref().child('deviceInfoModel');
-    final snapshot = await reference.once();
-    if (snapshot.snapshot.exists) {
-      final data = snapshot.snapshot.value as Map<dynamic, dynamic>;
-      return DeviceInfoModel.fromMap(Map<String, dynamic>.from(data));
-    } else {
-      throw 'Chưa có thông tin thiết bị của trẻ';
+    try {
+      final DatabaseReference reference =
+          FirebaseDatabase.instance.ref().child('deviceInfoModel');
+      final snapshot = await reference.once();
+      if (snapshot.snapshot.exists) {
+        final data = snapshot.snapshot.value as Map<dynamic, dynamic>;
+        return DeviceInfoModel.fromMap(Map<String, dynamic>.from(data));
+      } else {
+        throw 'Chưa có thông tin thiết bị của trẻ';
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -113,6 +117,22 @@ class ParentFirebaseApi {
         return AppUsageInfoModel.fromMap(Map<String, dynamic>.from(data));
       } else {
         throw 'Không tìm thấy ứng dụng';
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Lấy thông tin cài đặt thiết bị trên firebase
+  Future<MonitorSettingsModel?> getMonitorSettingInfo() async {
+    try {
+      final DatabaseReference reference = FirebaseDatabase.instance.ref();
+      final snapshot = await reference.child('monitorSettingsModel').once();
+      final data = snapshot.snapshot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        return MonitorSettingsModel.fromMap(data);
+      } else {
+        return null;
       }
     } catch (e) {
       rethrow;

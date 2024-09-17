@@ -20,21 +20,33 @@ class ChildFirebaseApi {
     });
   }
 
-  // cài đặt giám sát trên thiết bị của trẻ
-  Future<MonitorSettingsModel?> monitorSettingChildDevice() async {
-    try {
-      final DatabaseReference reference = FirebaseDatabase.instance.ref();
-      final snapshot = await reference.child('monitorSettingsModel').once();
+  // cài đặt giám sát trên thiết bị của trẻ bằng firebase
+  Future<void> monitorSettingChildDevice() async {
+    final DatabaseReference reference = FirebaseDatabase.instance.ref();
 
-      final data = snapshot.snapshot.value as Map<dynamic, dynamic>?;
+    reference.child('monitorSettingsModel').onValue.listen((event) {
+      final data = event.snapshot.value as Map<dynamic, dynamic>?;
 
-      if (data != null && data.isNotEmpty) {
+      if (data != null) {
         final model = MonitorSettingsModel.fromMap(data);
         // cài đặt thiết bị của trẻ trong native
         if (Platform.isIOS) NativeCommunicator().monitorSettingChannel(model);
-        return model;
+      }
+    }, onError: (error) {
+      throw error;
+    });
+  }
+
+  // Lấy thông tin cài đặt thiết bị trên firebase
+  Future<MonitorSettingsModel> getMonitorSettingInfo() async {
+    try {
+      final DatabaseReference reference = FirebaseDatabase.instance.ref();
+      final snapshot = await reference.child('monitorSettingsModel').once();
+      final data = snapshot.snapshot.value as Map<dynamic, dynamic>?;
+      if (data != null) {
+        return MonitorSettingsModel.fromMap(data);
       } else {
-        return null;
+        throw 'Chưa có yêu cầu cài đặt từ thiết bị phụ huynh';
       }
     } catch (e) {
       rethrow;

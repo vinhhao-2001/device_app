@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import '../core/widget/lifecycle_observer.dart';
 import '../data/api/local/background_service/children_service.dart';
 
-class TestScreen extends StatefulWidget {
-  const TestScreen({super.key});
+class BackgroundScreen extends StatefulWidget {
+  const BackgroundScreen({super.key});
 
   @override
-  State<TestScreen> createState() => _TestScreenState();
+  State<BackgroundScreen> createState() => _BackgroundScreenState();
 }
 
-class _TestScreenState extends LifecycleObserver<TestScreen> {
+class _BackgroundScreenState extends LifecycleObserver<BackgroundScreen> {
   @override
   Widget build(BuildContext context) {
     return PopScope(
