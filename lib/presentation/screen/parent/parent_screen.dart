@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../data/api/local/background_service/parent_service.dart';
-import '../../../data/api/remote/firebase/parent_firebase_api.dart';
 import '../../../data/api/local/native/native_communicator.dart';
+import '../../bloc/parent_bloc/device_info/device_info_bloc.dart';
 import '../../bloc/parent_bloc/monitor_setting/monitor_setting_bloc.dart';
+import '../../bloc/parent_bloc/usage_app/usage_app_bloc.dart';
 import 'child_app_usage_screen.dart';
 import 'device_state_screen.dart';
 import 'history_install_app_screen.dart';
@@ -58,7 +59,11 @@ class _ParentScreenState extends State<ParentScreen> {
               onPressed: () async {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const DeviceStateScreen()),
+                  MaterialPageRoute(
+                    builder: (_) => BlocProvider(
+                        create: (context) => DeviceInfoBloc(),
+                        child: const DeviceStateScreen()),
+                  ),
                 );
               },
               child: const Text('Xem tình trạng thiết bị của trẻ'),
@@ -66,14 +71,12 @@ class _ParentScreenState extends State<ParentScreen> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () async {
-                // lấy thời gian sử dụng ứng dụng trên firebase
-                final appList = await ParentFirebaseApi().getAppsInfo();
-                appList.sort((a, b) => b.usageTime.compareTo(a.usageTime));
-                if (!(context).mounted) return;
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (_) => ChildAppUsageScreen(appList: appList)),
+                      builder: (_) => BlocProvider(
+                          create: (context) => UsageAppBloc(),
+                          child: const ChildAppUsageScreen())),
                 );
               },
               child: const Text('Xem thời gian sử dụng thiết bị'),

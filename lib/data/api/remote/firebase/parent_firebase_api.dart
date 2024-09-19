@@ -59,21 +59,25 @@ class ParentFirebaseApi {
   }
 
   // phụ huynh lấy danh sách thời gian sử dụng ứng dụng của trẻ
-  Future<List<AppUsageInfoModel>> getAppsInfo() async {
-    DatabaseReference reference =
-        FirebaseDatabase.instance.ref().child('appListChild');
-    final snapshot = await reference.get();
-    if (snapshot.exists) {
-      List<AppUsageInfoModel> appList = [];
-      final Map<dynamic, dynamic> appsMap =
-          snapshot.value as Map<dynamic, dynamic>;
-      appsMap.forEach((key, value) {
-        appList
-            .add(AppUsageInfoModel.fromMap(Map<String, dynamic>.from(value)));
-      });
-      return appList;
-    } else {
-      throw 'Chưa có danh sách ứng dụng của trẻ';
+  Future<List<AppUsageInfoModel>> getUsageAppsInfo() async {
+    try {
+      DatabaseReference reference =
+          FirebaseDatabase.instance.ref().child('appListChild');
+      final snapshot = await reference.get();
+      if (snapshot.exists) {
+        List<AppUsageInfoModel> appList = [];
+        final Map<dynamic, dynamic> appsMap =
+            snapshot.value as Map<dynamic, dynamic>;
+        appsMap.forEach((key, value) {
+          appList
+              .add(AppUsageInfoModel.fromMap(Map<String, dynamic>.from(value)));
+        });
+        return appList;
+      } else {
+        throw 'Không lấy được thời gian sử dụng ứng dụng của trẻ';
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 

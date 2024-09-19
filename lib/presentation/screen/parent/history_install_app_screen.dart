@@ -28,7 +28,7 @@ class _HistoryInstallAppScreenState extends State<HistoryInstallAppScreen> {
         await databaseHelper.getAppChildInstallOrRemove();
     final Set<String> seen = {};
     final List<Map<String, String>> uniqueData = [];
-
+    // do mỗi lần vào app sẽ có dữ liệu được lưu vào
     for (var item in data) {
       final uniqueKey = '${item['appName']}-${item['event']}-${item['time']}';
       if (!seen.contains(uniqueKey)) {
