@@ -40,7 +40,19 @@ class Permissions {
       requestPermission('accessibilityPermission');
 
   // Xin quyền truy cập vị trí
-  Future<bool> locationPermission() => requestPermission('locationPermission');
+  // Future<bool> locationPermission() => requestPermission('locationPermission');
+
+  Future<bool> locationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse) {
+      return true;
+    }
+    return false;
+  }
 
   Future<Position> determinePosition() async {
     LocationPermission permission;
