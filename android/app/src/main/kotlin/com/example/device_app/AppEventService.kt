@@ -1,9 +1,8 @@
-package com.hao.device_app
+package com.example.device_app
 
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -18,7 +17,7 @@ import io.flutter.plugin.common.MethodChannel
 
 class AppEventService : Service() {
     private lateinit var methodChannel: MethodChannel
-    private val CHANNEL_ID = "app_installed_channel_id"
+    private val channelID = "app_installed_channel_id"
 
     private val appInstalledReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -62,7 +61,7 @@ class AppEventService : Service() {
             val name = "App Installed Notifications"
             val descriptionText = "Notifications for app installations and removals"
             val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+            val channel = NotificationChannel(channelID, name, importance).apply {
                 description = descriptionText
             }
             val notificationManager: NotificationManager = getSystemService(NotificationManager::class.java)
@@ -105,12 +104,19 @@ class AppEventService : Service() {
 
         val contentText = "$contentTitle: ${appName ?: packageName}"
 
-        val notificationBuilder = Notification.Builder(this, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_dialog_info) // Bạn có thể thay đổi biểu tượng
-            .setContentTitle(contentTitle)
-            .setContentText(contentText)
-            .setPriority(Notification.PRIORITY_DEFAULT)
-            .setAutoCancel(true)
+        val notificationBuilder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Notification.Builder(this, channelID)
+                .setSmallIcon(android.R.drawable.ic_dialog_info) // Bạn có thể thay đổi biểu tượng
+                .setContentTitle(contentTitle)
+                .setContentText(contentText)
+                .setPriority(Notification.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
+        } else {
+            Notification.Builder(this)
+                .setSmallIcon(android.R.drawable.ic_dialog_info) // Bạn có thể thay đổi biểu tượng
+                .setContentTitle(contentTitle)
+                .setContentText(contentText)
+        }
 
         notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
     }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/api/local/native/native_communicator.dart';
+import 'child/children_device_permissions_screen.dart';
 import 'child/children_screen.dart';
 import 'parent/parent_screen.dart';
 
@@ -45,8 +46,12 @@ class _UserSelectionScreenState extends State<UserSelectionScreen> {
               onPressed: () async {
                 if (Platform.isIOS) await NativeCommunicator().initChannel();
                 if (!context.mounted) return;
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => const ChildrenScreen()));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => Platform.isIOS
+                            ? const ChildrenScreen()
+                            : const ChildPermissionsScreen()));
                 final SharedPreferences prefs =
                     await SharedPreferences.getInstance();
                 await prefs.setInt('user', 2);

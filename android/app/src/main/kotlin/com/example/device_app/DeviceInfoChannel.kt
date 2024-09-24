@@ -1,4 +1,4 @@
-package com.hao.device_app
+package com.example.device_app
 
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -7,15 +7,13 @@ import android.os.Build
 import android.os.BatteryManager
 import android.media.AudioManager
 import android.provider.Settings
-import android.util.Log
-import java.util.HashMap
 
 class DeviceInfoChannel(private val context: Context){
-    private val DEVICE_INFO_CHANNEL = "device_info_channel"
+    private val deviceInfoChannel = "device_info_channel"
     private  lateinit var methodChannel: MethodChannel
 
     fun configureChannel(flutterEngine: FlutterEngine){
-        methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, DEVICE_INFO_CHANNEL)
+        methodChannel = MethodChannel(flutterEngine.dartExecutor.binaryMessenger, deviceInfoChannel)
         methodChannel.setMethodCallHandler{call, result ->
             if(call.method == "getDeviceInfo"){
                 val deviceInfo = getDeviceInfo()

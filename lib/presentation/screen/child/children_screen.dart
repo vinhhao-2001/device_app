@@ -1,11 +1,10 @@
-import 'package:device_app/core/utils/local_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../data/api/remote/firebase/child_firebase_api.dart';
 import '../../../data/api/local/native/native_communicator.dart';
 import '../../bloc/child_bloc/monitor_setting/monitor_setting_bloc.dart';
+import 'children_device_permissions_screen.dart';
 import 'children_monitor_screen.dart';
 
 class ChildrenScreen extends StatefulWidget {
@@ -23,20 +22,12 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
   }
 
   Future<void> _initialize() async {
-    await requestNotificationPermission();
     // Giám sát thiết bị
     await ChildFirebaseApi().monitorSettingChildDevice();
     // Thông tin thiết bị
     ChildFirebaseApi().sendDeviceInfo();
     // Lắng nghe ứng dụng cài đặt hoặc gỡ bỏ
     NativeCommunicator().listenAppInstalled();
-  }
-
-  Future<void> requestNotificationPermission() async {
-    var status = await Permission.notification.status;
-    if (status.isDenied) {
-      await Permission.notification.request();
-    }
   }
 
   @override
@@ -144,10 +135,8 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         onTap: () {
-                          // test xem những quyền trong thiết bị
-                          NativeCommunicator().appLimitChannel();
-                          LocalNotification()
-                              .showNotification('event', 'appName');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => const ChildPermissionsScreen()));
                         },
                       ),
                     ],

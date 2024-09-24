@@ -1,4 +1,4 @@
-package com.hao.device_app
+package com.example.device_app
 
 import android.app.AppOpsManager
 import android.app.usage.UsageStatsManager
@@ -12,6 +12,7 @@ import android.provider.Settings
 import java.io.ByteArrayOutputStream
 import java.util.Calendar
 import android.content.pm.PackageManager
+import android.os.Build
 
 class UsageInfoHandler(private val context: Context) {
 
@@ -23,7 +24,11 @@ class UsageInfoHandler(private val context: Context) {
         val startTime = calendar.timeInMillis
 
         val usageStatsManager =
-            context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                context.getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+            } else {
+                return emptyList()
+            }
         val usageStatsList = usageStatsManager.queryUsageStats(
             UsageStatsManager.INTERVAL_DAILY,
             startTime,
@@ -40,7 +45,11 @@ class UsageInfoHandler(private val context: Context) {
 
         for (app in installedApps) {
             val packageName = app["packageName"] as String
-            val usageTime = usageMap.getOrDefault(packageName, 0L)
+            val usageTime = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                usageMap.getOrDefault(packageName, 0L)
+            } else {
+                usageMap[packageName] ?: 0L
+            }
             appUsageInfoList.add(app + mapOf("usageTime" to usageTime))
         }
 
@@ -67,7 +76,11 @@ class UsageInfoHandler(private val context: Context) {
         val intent = Intent(Intent.ACTION_MAIN, null).apply {
             addCategory(Intent.CATEGORY_LAUNCHER)
         }
-        val apps = context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL)
+        val apps = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL)
+        } else {
+            context.packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+        }
         return apps.map { info ->
             val appInfo = info.activityInfo.applicationInfo
             val appName = context.packageManager.getApplicationLabel(appInfo).toString()
@@ -82,21 +95,36 @@ class UsageInfoHandler(private val context: Context) {
         }
     }
     // Chuyển đổi Drawable thành ByteArray
-    public fun drawableToByteArray(drawable: Drawable): ByteArray {
-        val bitmap = when (drawable) {
-            is BitmapDrawable -> drawable.bitmap
-            is AdaptiveIconDrawable -> {
-                val width = drawable.intrinsicWidth
-                val height = drawable.intrinsicHeight
-                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-                val canvas = android.graphics.Canvas(bitmap)
-                drawable.setBounds(0, 0, width, height)
-                drawable.draw(canvas)
-                bitmap
+     fun drawableToByteArray(drawable: Drawable): ByteArray {
+        val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            when (drawable) {
+                is BitmapDrawable -> drawable.bitmap
+                is AdaptiveIconDrawable -> {
+                    val width = drawable.intrinsicWidth
+                    val height = drawable.intrinsicHeight
+                    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                    val canvas = android.graphics.Canvas(bitmap)
+                    drawable.setBounds(0, 0, width, height)
+                    drawable.draw(canvas)
+                    bitmap
+                }
+                else -> return byteArrayOf()
             }
-
-            else -> return byteArrayOf()
+        } else {
+            when (drawable) {
+                is BitmapDrawable -> drawable.bitmap
+                else -> {
+                    val width = drawable.intrinsicWidth
+                    val height = drawable.intrinsicHeight
+                    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                    val canvas = android.graphics.Canvas(bitmap)
+                    drawable.setBounds(0, 0, width, height)
+                    drawable.draw(canvas)
+                    bitmap
+                }
+            }
         }
+
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
         return stream.toByteArray()

@@ -1,4 +1,4 @@
-package com.hao.device_app
+package com.example.device_app
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -10,12 +10,12 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 
 class AppInstalledChannel(private val context: Context) {
-    private val APP_INSTASLLED_CHANNEL = "app_installed_channel"
+    private val appInstalledChannel = "app_installed_channel"
     private lateinit var methodChannel: MethodChannel
 
     fun configureChannel(flutterEngine: FlutterEngine) {
         methodChannel =
-            MethodChannel(flutterEngine.dartExecutor.binaryMessenger, APP_INSTASLLED_CHANNEL)
+            MethodChannel(flutterEngine.dartExecutor.binaryMessenger, appInstalledChannel)
 
         val filter = IntentFilter()
         filter.addAction(Intent.ACTION_PACKAGE_ADDED)
