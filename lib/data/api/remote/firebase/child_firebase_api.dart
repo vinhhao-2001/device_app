@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:device_app/core/utils/utils.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../../../../model/app_usage_info_model.dart';
 import '../../../../model/monitor_settings_model.dart';
@@ -95,5 +96,15 @@ class ChildFirebaseApi {
     } catch (e) {
       rethrow;
     }
+  }
+
+  // gửi vị trí của trẻ lên firebase
+  Future<void> sendLocation(Position position) async {
+    final DatabaseReference reference = FirebaseDatabase.instance.ref();
+    reference.child('childLocation').set({
+      'latitude': position.latitude,
+      'longitude': position.longitude,
+      'timestamp': DateTime.now().microsecondsSinceEpoch,
+    });
   }
 }

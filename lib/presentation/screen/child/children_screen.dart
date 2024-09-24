@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../data/api/local/background_service/children_service.dart';
 import '../../../data/api/remote/firebase/child_firebase_api.dart';
 import '../../../data/api/local/native/native_communicator.dart';
 import '../../bloc/child_bloc/monitor_setting/monitor_setting_bloc.dart';
@@ -22,6 +23,7 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
   }
 
   Future<void> _initialize() async {
+    initializeService();
     // Giám sát thiết bị
     await ChildFirebaseApi().monitorSettingChildDevice();
     // Thông tin thiết bị

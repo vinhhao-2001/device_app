@@ -6,6 +6,7 @@ import CloudKit
 import AVFoundation
 import Firebase
 import flutter_background_service_ios
+import GoogleMaps
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -74,7 +75,9 @@ import flutter_background_service_ios
                 MyModel.shared.settingMonitor(with: args)
             }
         }
+
         FirebaseApp.configure()
+        GMSServices.provideAPIKey("AIzaSyCx10qvRhgY2575ZnLchGC2iTDfS5Airlc")
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Permissions {
@@ -40,4 +41,25 @@ class Permissions {
 
   // Xin quyền truy cập vị trí
   Future<bool> locationPermission() => requestPermission('locationPermission');
+
+  Future<Position> determinePosition() async {
+    LocationPermission permission;
+
+    // Kiểm tra quyền
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('Location permissions are permanently denied');
+    }
+
+    // Lấy vị trí hiện tại
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
 }

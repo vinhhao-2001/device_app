@@ -47,9 +47,16 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+
+
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
     <array>
         <string>dev.flutter.background.refresh</string>
     </array>
+
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>We need your location to keep track of the child.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>We need your location to keep track of the child even when the app is in background.</string>
 </dict>
 </plist>
