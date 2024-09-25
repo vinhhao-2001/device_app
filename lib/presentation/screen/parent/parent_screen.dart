@@ -1,4 +1,3 @@
-import 'package:device_app/presentation/bloc/child_bloc/child_location/child_location_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -105,9 +104,7 @@ class _ParentScreenState extends State<ParentScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (_) => BlocProvider(
-                            create: (context) => ChildLocationBloc(),
-                            child: const ChildLocationScreen())),
+                        builder: (_) => const ChildLocationScreen()),
                   );
                 },
                 child: const Text('Xem vị trí của trẻ')),
