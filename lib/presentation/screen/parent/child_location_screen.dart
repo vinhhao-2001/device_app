@@ -108,7 +108,7 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
             points: finalPolygonPoints,
             strokeColor: Colors.blue,
             strokeWidth: 2,
-            fillColor: Colors.blue.withOpacity(0.3),
+            fillColor: Colors.blue.withOpacity(0.5),
           ),
         );
         _isDrawing = false;
