@@ -72,7 +72,6 @@ class NativeCommunicator {
     try {
       await _appLimitChannel.invokeMethod('appLimit');
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -96,7 +95,7 @@ class NativeCommunicator {
           }
         }
       } catch (e) {
-        print('Lỗi gửi ứng dụng:  $e');
+       rethrow;
       }
     });
   }

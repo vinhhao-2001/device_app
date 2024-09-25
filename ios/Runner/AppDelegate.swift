@@ -77,7 +77,9 @@ import GoogleMaps
         }
 
         FirebaseApp.configure()
-        GMSServices.provideAPIKey("AIzaSyCx10qvRhgY2575ZnLchGC2iTDfS5Airlc")
+        GMSServices.provideAPIKey("AIzaSyDQ2c_pOSOFYSjxGMwkFvCVWKjYOM9siow")
+        // AIzaSyDQ2c_pOSOFYSjxGMwkFvCVWKjYOM9siow
+        // AIzaSyCx10qvRhgY2575ZnLchGC2iTDfS5Airlc
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }

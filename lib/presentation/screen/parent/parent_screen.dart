@@ -1,8 +1,8 @@
-import 'package:device_app/core/utils/permissions.dart';
+import 'package:device_app/presentation/bloc/child_bloc/child_location/child_location_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
 
+import '../../../core/utils/permissions.dart';
 import '../../../data/api/local/background_service/parent_service.dart';
 import '../../../data/api/local/native/native_communicator.dart';
 import '../../bloc/parent_bloc/device_info/device_info_bloc.dart';
@@ -105,7 +105,9 @@ class _ParentScreenState extends State<ParentScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                        builder: (_) => const ChildLocationScreen()),
+                        builder: (_) => BlocProvider(
+                            create: (context) => ChildLocationBloc(),
+                            child: const ChildLocationScreen())),
                   );
                 },
                 child: const Text('Xem vị trí của trẻ')),

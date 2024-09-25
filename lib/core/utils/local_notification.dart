@@ -35,7 +35,7 @@ class LocalNotification {
       await flutterLocalNotificationsPlugin.show(0, 'Device App',
           'Thiết bị của trẻ đã $event ứng dụng $appName', notificationDetails);
     } catch (e) {
-      print(e);
+      throw 'Không thể gửi thông báo';
     }
   }
 }

@@ -61,11 +61,11 @@ class _BackgroundScreenState extends LifecycleObserver<BackgroundScreen> {
   @override
   void onStart() {
     checkError();
-    print('Bắt đầu giao diện');
+    debugPrint('Bắt đầu giao diện');
   }
 
   @override
   void onEnd() async {
-    print('ứng dụng bị đóng');
+    debugPrint('ứng dụng bị đóng');
   }
 }

@@ -28,7 +28,7 @@ class _ChildrenMonitorScreenState extends State<ChildrenMonitorScreen> {
       body: Padding(
         padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 20),
         child: BlocBuilder<MonitorSettingBloc, MonitorSettingState>(
-          buildWhen: (a, b) => a.model != b.model || a.error != b.error,
+          buildWhen: (previous, current) => previous.model != current.model || previous.error != current.error,
           builder: (context, state) {
             if (state.model != null) {
               return Table(
