@@ -101,10 +101,10 @@ class ChildFirebaseApi {
   // gửi vị trí của trẻ lên firebase
   Future<void> sendLocation(Position position) async {
     final DatabaseReference reference = FirebaseDatabase.instance.ref();
-    reference.child('childLocation').set({
+    await reference.child('childLocation').set({
       'latitude': position.latitude,
       'longitude': position.longitude,
-      'timestamp': DateTime.now().microsecondsSinceEpoch,
+      'timestamp': DateTime.now().toIso8601String(),
     });
   }
 }

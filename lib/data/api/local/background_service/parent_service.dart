@@ -32,5 +32,9 @@ Future<bool> onIosBackground(ServiceInstance service) async {
 void onStart(ServiceInstance service) async {
   await Firebase.initializeApp();
   // lắng nghe dữ liệu trên firebase
-  await ParentFirebaseApi().listenChildAppInstalled();
+  ParentFirebaseApi().listenChildAppInstalled();
+  Timer.periodic(const Duration(seconds: 5), (timer) {
+    print('object');
+    ParentFirebaseApi().getChildLocation();
+  });
 }

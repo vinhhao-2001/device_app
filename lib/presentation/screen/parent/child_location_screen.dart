@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:firebase_database/firebase_database.dart';
+
+import '../../../core/utils/utils.dart';
+import '../../../data/api/local/db_helper/database_helper.dart';
+import '../../../data/api/remote/firebase/parent_firebase_api.dart';
 
 class ChildLocationScreen extends StatefulWidget {
   const ChildLocationScreen({super.key});
@@ -23,9 +26,28 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
   void initState() {
     super.initState();
     _loadCustomMarkerIcon();
-    _fetchChildLocation();
+    _loadSafeZone();
   }
 
+  Future<void> _loadSafeZone() async {
+    List<LatLng> safeZonePoints = await DatabaseHelper().getSafeZone();
+    setState(() {
+      _polygonPoints.addAll(safeZonePoints);
+      if (safeZonePoints.isNotEmpty) {
+        _polygons.add(Polygon(
+          polygonId: const PolygonId('safeZone'),
+          points: safeZonePoints,
+          strokeColor: Colors.blue,
+          strokeWidth: 2,
+          fillColor: Colors.blue.withOpacity(0.5),
+        ));
+      }
+    });
+    await _fetchChildLocation();
+    _polygonPoints.clear();
+  }
+
+  // icon của trẻ
   Future<void> _loadCustomMarkerIcon() async {
     _childIcon = await BitmapDescriptor.asset(
       const ImageConfiguration(size: Size(60, 60), devicePixelRatio: 2.5),
@@ -34,25 +56,21 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
   }
 
   Future<void> _fetchChildLocation() async {
-    DatabaseReference ref = FirebaseDatabase.instance.ref("childLocation");
-    final snapshot = await ref.once();
-    if (snapshot.snapshot.exists) {
-      var data = snapshot.snapshot.value as Map;
-      _childLocation = LatLng(data['latitude'], data['longitude']);
-      await _updateAddress(_childLocation);
-      _mapController?.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: _childLocation, zoom: 15.0),
-      ));
-      _checkChildLocation();
-    }
+    final model = await ParentFirebaseApi().getChildLocation();
+    _childLocation = model.position;
+    await _updateAddress(_childLocation);
+    _mapController?.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(target: _childLocation, zoom: 15.0),
+    ));
   }
 
   Future<void> _updateAddress(LatLng location) async {
     List<Placemark> placeMarks =
-    await placemarkFromCoordinates(location.latitude, location.longitude);
+        await placemarkFromCoordinates(location.latitude, location.longitude);
     if (placeMarks.isNotEmpty) {
       setState(() {
-        _address = "Vị trí của trẻ: ${placeMarks[0].street}, ${placeMarks[0].locality}";
+        _address =
+            "Vị trí của trẻ: ${placeMarks[0].street}, ${placeMarks[0].locality}";
       });
     }
   }
@@ -68,45 +86,23 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
   void _toggleDrawingMode() {
     setState(() {
       if (_isDrawing && _polygonPoints.length > 2) {
+        List<LatLng> convexHullPoints = Utils().getConvexHull(_polygonPoints);
         _polygons.add(Polygon(
           polygonId: const PolygonId('safeZone'),
-          points: List.from(_polygonPoints),
+          points: convexHullPoints,
           strokeColor: Colors.blue,
           strokeWidth: 2,
           fillColor: Colors.blue.withOpacity(0.5),
         ));
+
+        ParentFirebaseApi().sendSafeZoneInfo(convexHullPoints);
+        DatabaseHelper().insertSafeZone(convexHullPoints);
         _polygonPoints.clear();
-        _checkChildLocation();
+      } else {
+        _polygonPoints.clear();
       }
       _isDrawing = !_isDrawing;
     });
-  }
-
-  void _checkChildLocation() {
-    if (_polygonPoints.length < 3) return;
-    bool isInside = _isPointInPolygon(_childLocation, _polygonPoints);
-    if (!isInside) _handleOutsideZone();
-  }
-
-  bool _isPointInPolygon(LatLng point, List<LatLng> polygon) {
-    int intersections = 0;
-    for (int i = 0; i < polygon.length; i++) {
-      LatLng p1 = polygon[i], p2 = polygon[(i + 1) % polygon.length];
-      if (((p1.latitude <= point.latitude && point.latitude < p2.latitude) ||
-          (p2.latitude <= point.latitude && point.latitude < p1.latitude)) &&
-          (point.longitude <
-              (p2.longitude - p1.longitude) *
-                  (point.latitude - p1.latitude) /
-                  (p2.latitude - p1.latitude) +
-                  p1.longitude)) {
-        intersections++;
-      }
-    }
-    return intersections.isOdd;
-  }
-
-  void _handleOutsideZone() {
-    // Xử lý khi trẻ ra khỏi vùng an toàn
   }
 
   @override
@@ -118,7 +114,8 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
           Expanded(
             child: GoogleMap(
               onMapCreated: _onMapCreated,
-              initialCameraPosition: CameraPosition(target: _childLocation, zoom: 15.0),
+              initialCameraPosition:
+                  CameraPosition(target: _childLocation, zoom: 15.0),
               markers: {
                 Marker(
                   markerId: const MarkerId("child"),
@@ -129,7 +126,8 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
                   Marker(
                     markerId: MarkerId('point_$i'),
                     position: _polygonPoints[i],
-                    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+                    icon: BitmapDescriptor.defaultMarkerWithHue(
+                        BitmapDescriptor.hueRed),
                   ),
               },
               polygons: _polygons,

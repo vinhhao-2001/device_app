@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:device_app/data/api/local/db_helper/database_helper.dart';
+import 'package:device_app/model/child_location_model.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../core/utils/local_notification.dart';
 import '../../../../core/utils/utils.dart';
@@ -94,13 +96,13 @@ class ParentFirebaseApi {
         if (event == 'cài đặt') {
           final appName = map['appName'];
           final appIcon = map['appIcon'];
-          await LocalNotification().showNotification(event, appName);
+          await LocalNotification().installedNotification(event, appName);
           // lưu ứng dụng vào danh sách
           await DatabaseHelper()
               .insertAppChildInstallOrRemove(event, appName, appIcon, time);
         } else {
           final app = await getAppName(packageName);
-          await LocalNotification().showNotification(event, app.name);
+          await LocalNotification().installedNotification(event, app.name);
           await DatabaseHelper()
               .insertAppChildInstallOrRemove(event, app.name, app.icon, time);
         }
@@ -141,5 +143,38 @@ class ParentFirebaseApi {
     } catch (e) {
       rethrow;
     }
+  }
+
+  // Lấy vị trí của trẻ
+  Future<ChildLocationModel> getChildLocation() async {
+    try {
+      final DatabaseReference reference =
+          FirebaseDatabase.instance.ref('childLocation');
+      final snapshot = await reference.once();
+
+      if (snapshot.snapshot.exists) {
+        Map<dynamic, dynamic> data =
+            snapshot.snapshot.value as Map<dynamic, dynamic>;
+        final model = ChildLocationModel.fromMap(data);
+        Utils().checkChildLocation(model.position);
+        return model;
+      } else {
+        throw 'Không thể lấy vị trí của trẻ';
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Gửi phạm vi an toàn của trẻ lên firebase
+  Future<void> sendSafeZoneInfo(List<LatLng> polygonPoints) async {
+    DatabaseReference ref = FirebaseDatabase.instance.ref("safeZone");
+    List<Map<String, double>> points = polygonPoints.map((point) {
+      return {
+        'latitude': point.latitude,
+        'longitude': point.longitude,
+      };
+    }).toList();
+    await ref.set(points);
   }
 }

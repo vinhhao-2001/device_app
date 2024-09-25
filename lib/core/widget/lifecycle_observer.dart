@@ -48,7 +48,7 @@ abstract class LifecycleObserver<T extends StatefulWidget> extends State<T>
   // thực hiện trước khi ứng dụng bị đóng
   @override
   Future<AppExitResponse> didRequestAppExit() async {
-    await LocalNotification().showNotification('event', 'appName');
+    await LocalNotification().installedNotification('event', 'appName');
     return super.didRequestAppExit();
   }
 

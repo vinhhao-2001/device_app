@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DatabaseHelper {
@@ -34,5 +35,32 @@ class DatabaseHelper {
         .map((json) => Map<String, String>.from(jsonDecode(json)))
         .toList();
     return result;
+  }
+
+  // Lưu vùng an toàn của trẻ
+  Future<void> insertSafeZone(List<LatLng> polygonPoints) async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String> points = polygonPoints.map((point) {
+      return '${point.latitude},${point.longitude}';
+    }).toList();
+
+    await preferences.setStringList('points', points);
+  }
+
+  Future<List<LatLng>> getSafeZone() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    List<String>? pointStrings = preferences.getStringList('points');
+
+    if (pointStrings != null) {
+      return pointStrings.map((pointString) {
+        final coordinates = pointString.split(',');
+        return LatLng(
+          double.parse(coordinates[0]),
+          double.parse(coordinates[1]),
+        );
+      }).toList();
+    } else {
+      return [];
+    }
   }
 }

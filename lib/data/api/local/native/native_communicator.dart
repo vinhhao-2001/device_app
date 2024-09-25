@@ -83,7 +83,7 @@ class NativeCommunicator {
         if (call.method == 'appInstalled') {
           final event = call.arguments['event'];
           final packageName = call.arguments['packageName'];
-          LocalNotification().showNotification(event, packageName);
+          LocalNotification().installedNotification(event, packageName);
           if (event == 'cài đặt') {
             final appName = call.arguments['appName'];
             final appIcon = base64Encode(
