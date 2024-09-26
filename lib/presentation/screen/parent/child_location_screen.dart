@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 
+import '../../../core/theme/app_text.dart';
 import '../../../core/utils/utils.dart';
 import '../../../data/api/local/db_helper/database_helper.dart';
 import '../../../data/api/remote/firebase/parent_firebase_api.dart';
@@ -68,9 +69,9 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
     List<Placemark> placeMarks =
         await placemarkFromCoordinates(location.latitude, location.longitude);
     if (placeMarks.isNotEmpty) {
+      final placeMark = placeMarks[0];
       setState(() {
-        _address =
-            "Vị trí của trẻ: ${placeMarks[0].street}, ${placeMarks[0].locality}";
+        _address = Utils().formatAddress(placeMark);
       });
     }
   }
@@ -115,7 +116,7 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
             child: GoogleMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition:
-                  CameraPosition(target: _childLocation, zoom: 15.0),
+                  CameraPosition(target: _childLocation, zoom: 5.0),
               markers: {
                 Marker(
                   markerId: const MarkerId("child"),
@@ -138,19 +139,26 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
-                Text(_address.isEmpty ? "Loading address..." : _address),
+                SizedBox(
+                  height: 50,
+                  child: Text(
+                    _address.isEmpty ? AppText.loadingAddress : _address,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ElevatedButton.icon(
                       onPressed: _fetchChildLocation,
                       icon: const Icon(Icons.refresh),
-                      label: const Text("Cập nhật"),
+                      label: const Text(AppText.update),
                     ),
                     ElevatedButton.icon(
                       onPressed: _toggleDrawingMode,
                       icon: Icon(_isDrawing ? Icons.check : Icons.security),
-                      label: Text(_isDrawing ? "Hoàn tất" : "Vùng an toàn"),
+                      label: Text(_isDrawing ? "Hoàn tất" : AppText.safeZone),
                     ),
                   ],
                 ),

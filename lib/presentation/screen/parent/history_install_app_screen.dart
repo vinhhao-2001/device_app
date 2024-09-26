@@ -63,8 +63,8 @@ class _HistoryInstallAppScreenState extends State<HistoryInstallAppScreen> {
 
                 return ListTile(
                   leading: Image.memory(base64Decode(appIcon)),
-                  title: Text(
-                      '$appName đã được $event lúc ${Utils().formatTime(time)}'),
+                  title: Text('$appName đã được $event'),
+                  subtitle: Text(Utils().formatTime(time)),
                 );
               },
             ),

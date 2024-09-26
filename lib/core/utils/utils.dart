@@ -1,4 +1,5 @@
 import 'package:device_app/data/api/local/db_helper/database_helper.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
@@ -34,6 +35,15 @@ class Utils {
     parts.add("$seconds giây");
 
     return parts.join(" ");
+  }
+
+  // Định dạng địa chỉ
+  String formatAddress(Placemark placeMark) {
+    return "Vị trí của trẻ: ${placeMark.street ?? ''}, ${placeMark.locality ?? ''}, "
+            "${placeMark.subAdministrativeArea ?? ''}, ${placeMark.administrativeArea ?? ''}, "
+            "${placeMark.country ?? ''}"
+        .replaceAll(RegExp(', +'), ', ')
+        .trim();
   }
 
   // Vẽ phạm vi an toàn của trẻ

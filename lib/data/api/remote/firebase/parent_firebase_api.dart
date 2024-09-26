@@ -14,26 +14,31 @@ import '../../../../model/monitor_settings_model.dart';
 class ParentFirebaseApi {
   // yêu cầu lấy thông tin thiết bị của phụ huynh
   Future<void> requestChildDeviceInfo() async {
-    final DatabaseReference reference = FirebaseDatabase.instance.ref();
+    try {
+      final DatabaseReference reference = FirebaseDatabase.instance.ref();
 
-    // Gửi yêu cầu đến máy con
-    await reference.child('request').set({
-      'time': DateTime.now().toIso8601String(),
-    });
+      // Gửi yêu cầu đến máy con
+      await reference.child('request').set({
+        'time': DateTime.now().toIso8601String(),
+      });
 
-    // Sử dụng Completer để chờ thông tin từ máy con
-    Completer<void> completer = Completer<void>();
-
-    // Lắng nghe sự thay đổi trên 'sent'
-    final StreamSubscription<DatabaseEvent> subscription =
-        reference.child('sent').onValue.listen((event) {
-      if (event.snapshot.value == true && !completer.isCompleted) {
-        reference.child('sent').set(false);
-        completer.complete();
+      Completer<void> completer = Completer<void>();
+      // lắng nghe xem trẻ đã gửi dữ liệu lên firebase chưa
+      final StreamSubscription<DatabaseEvent> subscription =
+          reference.child('sent').onValue.listen((event) {
+        if (event.snapshot.value == true && !completer.isCompleted) {
+          reference.child('sent').set(false);
+          completer.complete();
+        }
+      });
+      await completer.future.timeout(Duration(seconds: 3));
+      subscription.cancel();
+    } catch (e) {
+      if (e is TimeoutException) {
+        throw 'Không nhận được phản hồi từ thiết bị của trẻ';
       }
-    });
-    await completer.future;
-    await subscription.cancel();
+      rethrow;
+    }
   }
 
   // gửi các cài đặt thiết bị của trẻ lên firebase từ phụ huynh
@@ -48,7 +53,7 @@ class ParentFirebaseApi {
     try {
       final DatabaseReference reference =
           FirebaseDatabase.instance.ref().child('deviceInfoModel');
-      final snapshot = await reference.once();
+      final snapshot = await reference.once().timeout(Duration(seconds: 3));
       if (snapshot.snapshot.exists) {
         final data = snapshot.snapshot.value as Map<dynamic, dynamic>;
         return DeviceInfoModel.fromMap(Map<String, dynamic>.from(data));
@@ -56,6 +61,9 @@ class ParentFirebaseApi {
         throw 'Chưa có thông tin thiết bị của trẻ';
       }
     } catch (e) {
+      if (e is TimeoutException) {
+        throw 'Không lấy được thông tin thiết bị';
+      }
       rethrow;
     }
   }
@@ -112,6 +120,7 @@ class ParentFirebaseApi {
     }
   }
 
+  // lấy tên của ứng dụng trên firebase, dùng khi gỡ cài đặt
   Future<AppUsageInfoModel> getAppName(String packageName) async {
     try {
       DatabaseReference reference =

@@ -34,7 +34,6 @@ void onStart(ServiceInstance service) async {
   // lắng nghe dữ liệu trên firebase
   ParentFirebaseApi().listenChildAppInstalled();
   Timer.periodic(const Duration(seconds: 5), (timer) {
-    print('object');
     ParentFirebaseApi().getChildLocation();
   });
 }

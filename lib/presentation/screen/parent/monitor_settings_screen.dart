@@ -28,7 +28,7 @@ class _MonitoringSettingsScreenState extends State<MonitoringSettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cài đặt giám sát"),
+        title: const Text("Cài đặt thiết bị"),
         actions: [
           TextButton(
             onPressed: () {
@@ -207,7 +207,8 @@ class _MonitoringSettingsScreenState extends State<MonitoringSettingsScreen> {
                           value: state.model!.denyAddingFriends,
                           items: const [
                             DropdownMenuItem(value: true, child: Text("Không")),
-                            DropdownMenuItem(value: false, child: Text("Cho phép")),
+                            DropdownMenuItem(
+                                value: false, child: Text("Cho phép")),
                           ],
                           onChanged: (value) {
                             model = model.copyWith(denyAddingFriends: value);
