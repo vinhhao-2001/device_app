@@ -43,15 +43,15 @@
             android:foregroundServiceType="location" />
 
 
-        <service android:name="com.example.device_app.AppEventService"
+        <service android:name="com.hao.device_app.AppEventService"
             android:exported="true"
             android:enabled="true"
             android:stopWithTask="false"
             android:permission="android.permission.FOREGROUND_SERVICE"
             android:foregroundServiceType="location" />
-
+        <!--dịch vụ trợ năng-->
         <service
-            android:name="com.example.device_app.MyAccessibilityService"
+            android:name="com.hao.device_app.MyAccessibilityService"
             android:exported="true"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -64,7 +64,7 @@
         </service>
 
         <receiver
-            android:name="com.example.device_app.MyDeviceAdminReceiver"
+            android:name="com.hao.device_app.MyDeviceAdminReceiver"
             android:exported="true"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <meta-data
@@ -77,7 +77,7 @@
 
 
         <activity
-            android:name="com.example.device_app.MainActivity"
+            android:name="com.hao.device_app.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
