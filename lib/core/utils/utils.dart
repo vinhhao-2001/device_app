@@ -1,4 +1,4 @@
-import 'package:device_app/data/api/local/db_helper/database_helper.dart';
+import 'package:device_app/data/api/local/db_helper/parent_database.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -84,7 +84,7 @@ class Utils {
 
   // kiểm tra trẻ có ở trong phạm vi an toàn không
   Future<void> checkChildLocation(LatLng childLocation) async {
-    final polygonPoints = await DatabaseHelper().getSafeZone();
+    final polygonPoints = await ParentDatabase().getSafeZone();
     if (polygonPoints.length < 3) return;
     int intersections = 0;
     for (int i = 0; i < polygonPoints.length; i++) {

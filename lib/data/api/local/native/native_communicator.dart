@@ -95,7 +95,7 @@ class NativeCommunicator {
           }
         }
       } catch (e) {
-       rethrow;
+        rethrow;
       }
     });
   }

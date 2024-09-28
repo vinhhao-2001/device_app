@@ -1,3 +1,5 @@
+import 'package:device_app/core/utils/permissions.dart';
+import 'package:device_app/data/api/local/db_helper/child_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -82,14 +84,13 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        onTap: () async {
-                          // giới hạn ứng dụng
-                          //  await NativeCommunicator().appLimitChannel();
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //       builder: (_) => const TestScreen()),
-                          // );
+                        onTap: () {
+                          Permissions().accessibilityPermission();
+                          List<String> a = [
+                            "com.android.chrome",
+                            "com.android.settings",
+                          ];
+                          ChildDatabase().insertBlockedApps(a);
                         },
                       ),
                       const SizedBox(height: 10),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../data/api/remote/firebase/parent_firebase_api.dart';
-import '../../../model/monitor_settings_model.dart';
-import '../../bloc/parent_bloc/monitor_setting/monitor_setting_bloc.dart';
+import '../../../../data/api/remote/firebase/parent_firebase_api.dart';
+import '../../../../model/monitor_settings_model.dart';
+import '../../../bloc/parent_bloc/monitor_setting/monitor_setting_bloc.dart';
 
 class MonitoringSettingsScreen extends StatefulWidget {
   const MonitoringSettingsScreen({super.key});

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,7 +14,7 @@ import 'child_app_usage_screen.dart';
 import 'child_location_screen.dart';
 import 'device_state_screen.dart';
 import 'history_install_app_screen.dart';
-import 'monitor_settings_screen.dart';
+import 'ios/monitor_settings_screen.dart';
 
 class ParentScreen extends StatefulWidget {
   const ParentScreen({super.key});
@@ -55,7 +57,6 @@ class _ParentScreenState extends State<ParentScreen> {
 
       body: Column(
         children: [
-          // New Row for Avatar and Device Name
           Container(
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -80,32 +81,34 @@ class _ParentScreenState extends State<ParentScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildElevatedButton(
-                  context,
-                  'Giới hạn ứng dụng',
-                  Icons.apps,
-                  onPressed: () async {
-                    await NativeCommunicator().appLimitChannel();
-                  },
-                ),
-                const SizedBox(height: 20),
-                _buildElevatedButton(
-                  context,
-                  'Cài đặt thiết bị',
-                  Icons.settings,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                          create: (context) => MonitorSettingBloc(),
-                          child: const MonitoringSettingsScreen(),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 20),
+                Platform.isIOS
+                    ? _buildElevatedButton(
+                        context,
+                        'Giới hạn ứng dụng',
+                        Icons.apps,
+                        onPressed: () async {
+                          await NativeCommunicator().appLimitChannel();
+                        },
+                      )
+                    : SizedBox.shrink(),
+                Platform.isIOS
+                    ? _buildElevatedButton(
+                        context,
+                        'Cài đặt thiết bị',
+                        Icons.settings,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                create: (context) => MonitorSettingBloc(),
+                                child: const MonitoringSettingsScreen(),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : SizedBox.shrink(),
                 _buildElevatedButton(
                   context,
                   'Xem tình trạng thiết bị của trẻ',
@@ -122,24 +125,24 @@ class _ParentScreenState extends State<ParentScreen> {
                     );
                   },
                 ),
-                const SizedBox(height: 20),
-                _buildElevatedButton(
-                  context,
-                  'Thời gian sử dụng ứng dụng',
-                  Icons.access_time,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => BlocProvider(
-                          create: (context) => UsageAppBloc(),
-                          child: const ChildAppUsageScreen(),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 20),
+                Platform.isAndroid
+                    ? _buildElevatedButton(
+                        context,
+                        'Thời gian sử dụng ứng dụng',
+                        Icons.access_time,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => BlocProvider(
+                                create: (context) => UsageAppBloc(),
+                                child: const ChildAppUsageScreen(),
+                              ),
+                            ),
+                          );
+                        },
+                      )
+                    : SizedBox.shrink(),
                 _buildElevatedButton(
                   context,
                   'Lịch sử cài đặt ứng dụng của trẻ',
@@ -152,7 +155,6 @@ class _ParentScreenState extends State<ParentScreen> {
                     );
                   },
                 ),
-                const SizedBox(height: 20),
                 _buildElevatedButton(
                   context,
                   'Xem vị trí của trẻ',
@@ -175,19 +177,24 @@ class _ParentScreenState extends State<ParentScreen> {
 
   Widget _buildElevatedButton(BuildContext context, String label, IconData icon,
       {required void Function() onPressed}) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Icon(icon, size: 30),
-          const SizedBox(width: 20),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 18),
+    return Column(
+      children: [
+        ElevatedButton(
+          onPressed: onPressed,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Icon(icon, size: 30),
+              const SizedBox(width: 20),
+              Text(
+                label,
+                style: const TextStyle(fontSize: 18),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+        SizedBox(height: 20),
+      ],
     );
   }
 }

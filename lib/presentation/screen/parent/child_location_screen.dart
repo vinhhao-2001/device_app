@@ -1,10 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 
 import '../../../core/theme/app_text.dart';
 import '../../../core/utils/utils.dart';
-import '../../../data/api/local/db_helper/database_helper.dart';
+import '../../../data/api/local/db_helper/parent_database.dart';
 import '../../../data/api/remote/firebase/parent_firebase_api.dart';
 
 class ChildLocationScreen extends StatefulWidget {
@@ -31,7 +33,7 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
   }
 
   Future<void> _loadSafeZone() async {
-    List<LatLng> safeZonePoints = await DatabaseHelper().getSafeZone();
+    List<LatLng> safeZonePoints = await ParentDatabase().getSafeZone();
     setState(() {
       _polygonPoints.addAll(safeZonePoints);
       if (safeZonePoints.isNotEmpty) {
@@ -66,13 +68,20 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
   }
 
   Future<void> _updateAddress(LatLng location) async {
-    List<Placemark> placeMarks =
-        await placemarkFromCoordinates(location.latitude, location.longitude);
-    if (placeMarks.isNotEmpty) {
-      final placeMark = placeMarks[0];
-      setState(() {
-        _address = Utils().formatAddress(placeMark);
-      });
+    try {
+      List<Placemark> placeMarks =
+          await placemarkFromCoordinates(location.latitude, location.longitude);
+      if (placeMarks.isNotEmpty) {
+        final placeMark = placeMarks[0];
+        setState(() {
+          _address = Utils().formatAddress(placeMark);
+        });
+      }
+    } catch (e) {
+      if (e is TimeoutException) {
+        throw 'Không lấy được vị trí của trẻ';
+      }
+      rethrow;
     }
   }
 
@@ -97,7 +106,7 @@ class _ChildLocationScreenState extends State<ChildLocationScreen> {
         ));
 
         ParentFirebaseApi().sendSafeZoneInfo(convexHullPoints);
-        DatabaseHelper().insertSafeZone(convexHullPoints);
+        ParentDatabase().insertSafeZone(convexHullPoints);
         _polygonPoints.clear();
       } else {
         _polygonPoints.clear();

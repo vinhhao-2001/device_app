@@ -1,6 +1,5 @@
 package com.hao.device_app
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -42,6 +41,7 @@ class AppEventService : Service() {
         }
     }
 
+    // Khởi tạo và đăng ký BroadcastReceiver
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
@@ -56,6 +56,7 @@ class AppEventService : Service() {
         registerReceiver(appInstalledReceiver, filter)
     }
 
+    // Tạo kênh thông báo
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "App Installed Notifications"
@@ -69,6 +70,7 @@ class AppEventService : Service() {
         }
     }
 
+    // Gửi ứng dụng cài đặt hoặc gỡ bỏ ứng dụng
     private fun sendAppInstalledEvent(
         eventType: String,
         packageName: String,
@@ -82,43 +84,12 @@ class AppEventService : Service() {
         appName?.let { event["appName"] = it }
         appIcon?.let { event["appIcon"] = UsageInfoHandler(this).drawableToByteArray(it) }
 
-        // Gửi thông báo
-        showNotification(eventType, packageName, appName)
-
         // Gọi phương thức invokeMethod
         if (::methodChannel.isInitialized) {
             methodChannel.invokeMethod("appInstalled", event)
         } else {
             Log.e("AppInstallService", "MethodChannel is not initialized")
         }
-    }
-
-    private fun showNotification(eventType: String, packageName: String, appName: String?) {
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val contentTitle = when (eventType) {
-            "cài đặt" -> "Ứng dụng được cài đặt"
-            "gỡ bỏ" -> "Ứng dụng bị gỡ bỏ"
-            else -> "Thông báo ứng dụng"
-        }
-
-        val contentText = "$contentTitle: ${appName ?: packageName}"
-
-        val notificationBuilder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Notification.Builder(this, channelID)
-                .setSmallIcon(android.R.drawable.ic_dialog_info) // Bạn có thể thay đổi biểu tượng
-                .setContentTitle(contentTitle)
-                .setContentText(contentText)
-                .setPriority(Notification.PRIORITY_DEFAULT)
-                .setAutoCancel(true)
-        } else {
-            Notification.Builder(this)
-                .setSmallIcon(android.R.drawable.ic_dialog_info) // Bạn có thể thay đổi biểu tượng
-                .setContentTitle(contentTitle)
-                .setContentText(contentText)
-        }
-
-        notificationManager.notify(System.currentTimeMillis().toInt(), notificationBuilder.build())
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

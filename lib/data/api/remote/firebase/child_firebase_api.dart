@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:device_app/core/utils/utils.dart';
+import 'package:device_app/model/app_limit_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -107,4 +108,17 @@ class ChildFirebaseApi {
       'timestamp': DateTime.now().toIso8601String(),
     });
   }
+
+  // lấy danh sách ứng dụng bị giới hạn trên firebase
+  // Future<List<AppLimitModel>> getAppLimit() async {
+  //   try{
+  //     final DatabaseReference reference = FirebaseDatabase.instance.ref();
+  //     reference.child('listAppLimit').onValue.listen((value){
+  //       final data = value.snapshot.value as Map<dynamic,dynamic>;
+  //       return data;
+  //     });
+  //   }catch(e){
+  //     rethrow;
+  //   }
+  // }
 }

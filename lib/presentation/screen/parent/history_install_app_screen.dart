@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import '../../../core/utils/utils.dart';
-import '../../../data/api/local/db_helper/database_helper.dart';
+import '../../../data/api/local/db_helper/parent_database.dart';
 
 class HistoryInstallAppScreen extends StatefulWidget {
   const HistoryInstallAppScreen({super.key});
@@ -23,7 +23,7 @@ class _HistoryInstallAppScreenState extends State<HistoryInstallAppScreen> {
 
   // lấy danh sách ứng dụng được cài đặt hoặc gỡ bỏ
   Future<void> _loadAppList() async {
-    DatabaseHelper databaseHelper = DatabaseHelper();
+    ParentDatabase databaseHelper = ParentDatabase();
     List<Map<String, String>> data =
         await databaseHelper.getAppChildInstallOrRemove();
     final Set<String> seen = {};

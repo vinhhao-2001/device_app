@@ -1,15 +1,16 @@
 import 'dart:async';
 
-import 'package:device_app/data/api/local/db_helper/database_helper.dart';
-import 'package:device_app/model/child_location_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../core/utils/local_notification.dart';
 import '../../../../core/utils/utils.dart';
+import '../../../../model/app_limit_model.dart';
 import '../../../../model/app_usage_info_model.dart';
+import '../../../../model/child_location_model.dart';
 import '../../../../model/device_info_model.dart';
 import '../../../../model/monitor_settings_model.dart';
+import '../../local/db_helper/parent_database.dart';
 
 class ParentFirebaseApi {
   // yêu cầu lấy thông tin thiết bị của phụ huynh
@@ -31,7 +32,7 @@ class ParentFirebaseApi {
           completer.complete();
         }
       });
-      await completer.future.timeout(Duration(seconds: 3));
+      await completer.future.timeout(Duration(seconds: 10));
       subscription.cancel();
     } catch (e) {
       if (e is TimeoutException) {
@@ -53,7 +54,7 @@ class ParentFirebaseApi {
     try {
       final DatabaseReference reference =
           FirebaseDatabase.instance.ref().child('deviceInfoModel');
-      final snapshot = await reference.once().timeout(Duration(seconds: 3));
+      final snapshot = await reference.once().timeout(Duration(seconds: 10));
       if (snapshot.snapshot.exists) {
         final data = snapshot.snapshot.value as Map<dynamic, dynamic>;
         return DeviceInfoModel.fromMap(Map<String, dynamic>.from(data));
@@ -106,12 +107,12 @@ class ParentFirebaseApi {
           final appIcon = map['appIcon'];
           await LocalNotification().installedNotification(event, appName);
           // lưu ứng dụng vào danh sách
-          await DatabaseHelper()
+          await ParentDatabase()
               .insertAppChildInstallOrRemove(event, appName, appIcon, time);
         } else {
           final app = await getAppName(packageName);
           await LocalNotification().installedNotification(event, app.name);
-          await DatabaseHelper()
+          await ParentDatabase()
               .insertAppChildInstallOrRemove(event, app.name, app.icon, time);
         }
       });
@@ -159,7 +160,7 @@ class ParentFirebaseApi {
     try {
       final DatabaseReference reference =
           FirebaseDatabase.instance.ref('childLocation');
-      final snapshot = await reference.once();
+      final snapshot = await reference.once().timeout(Duration(seconds: 10));
 
       if (snapshot.snapshot.exists) {
         Map<dynamic, dynamic> data =
@@ -168,9 +169,12 @@ class ParentFirebaseApi {
         Utils().checkChildLocation(model.position);
         return model;
       } else {
-        throw 'Không thể lấy vị trí của trẻ';
+        throw 'Không tìm thấy vị trí của trẻ';
       }
     } catch (e) {
+      if (e is TimeoutException) {
+        throw 'Không lấy được vị trí của trẻ';
+      }
       rethrow;
     }
   }
@@ -185,5 +189,14 @@ class ParentFirebaseApi {
       };
     }).toList();
     await ref.set(points);
+  }
+
+  // Gửi danh sách ứng dụng bị giới hạn lên firebase
+  Future<void> sendListAppLimit(AppLimitModel model) async {
+    DatabaseReference reference = FirebaseDatabase.instance.ref();
+    reference
+        .child('listAppLimit')
+        .child(Utils().sanitizeKey(model.packageName))
+        .set(model.toMap());
   }
 }

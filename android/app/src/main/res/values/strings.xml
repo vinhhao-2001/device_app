@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_limit">Đã hết thời gian sử dụng ứng dụng</string>
+    <string name="back_home">Trở về</string>
+</resources>
