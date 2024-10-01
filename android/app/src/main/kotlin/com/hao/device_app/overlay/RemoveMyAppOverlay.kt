@@ -1,4 +1,4 @@
-package com.hao.device_app
+package com.hao.device_app.overlay
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
@@ -6,17 +6,18 @@ import android.graphics.PixelFormat
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
+import com.hao.device_app.R
 
-class BlockOverlay(private val context: Context) {
+class RemoveMyAppOverlay(private val context: Context) {
     private var windowManager: WindowManager? = null
     private var blockView: View? = null
 
-    fun showBlockScreen() {
+    fun showRemoveMyAppOverlay() {
         windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-        blockView = View.inflate(context, R.layout.activity_block, null)
+        blockView = View.inflate(context, R.layout.remove_my_app, null)
 
-        val backButton = blockView?.findViewById<View>(R.id.back_button)
+        val backButton = blockView?.findViewById<View>(R.id.homeBtn)
 
         backButton?.setOnClickListener {
             (context as AccessibilityService).performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
@@ -38,7 +39,7 @@ class BlockOverlay(private val context: Context) {
         } else {
             WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.MATCH_PARENT,
+                200,
                 WindowManager.LayoutParams.TYPE_APPLICATION,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
                         WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or
@@ -59,4 +60,5 @@ class BlockOverlay(private val context: Context) {
             blockView = null
         }
     }
+
 }

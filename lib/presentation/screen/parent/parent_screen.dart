@@ -125,24 +125,22 @@ class _ParentScreenState extends State<ParentScreen> {
                     );
                   },
                 ),
-                Platform.isAndroid
-                    ? _buildElevatedButton(
-                        context,
-                        'Thời gian sử dụng ứng dụng',
-                        Icons.access_time,
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => BlocProvider(
-                                create: (context) => UsageAppBloc(),
-                                child: const ChildAppUsageScreen(),
-                              ),
-                            ),
-                          );
-                        },
-                      )
-                    : SizedBox.shrink(),
+                _buildElevatedButton(
+                  context,
+                  'Thời gian sử dụng ứng dụng',
+                  Icons.access_time,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider(
+                          create: (context) => UsageAppBloc(),
+                          child: const ChildAppUsageScreen(),
+                        ),
+                      ),
+                    );
+                  },
+                ),
                 _buildElevatedButton(
                   context,
                   'Lịch sử cài đặt ứng dụng của trẻ',

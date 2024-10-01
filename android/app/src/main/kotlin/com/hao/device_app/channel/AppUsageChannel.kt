@@ -1,9 +1,10 @@
-package com.hao.device_app
+package com.hao.device_app.channel
 
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import android.content.Context
 import android.util.Log
+import com.hao.device_app.UsageInfoHandler
 
 class AppUsageChannel(private val context: Context) {
     private val appUsageChannel = "app_usage_channel"

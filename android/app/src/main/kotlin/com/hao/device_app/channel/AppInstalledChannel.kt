@@ -1,4 +1,4 @@
-package com.hao.device_app
+package com.hao.device_app.channel
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.drawable.Drawable
 import android.util.Log
+import com.hao.device_app.UsageInfoHandler
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 

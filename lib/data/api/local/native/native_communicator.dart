@@ -21,6 +21,8 @@ class NativeCommunicator {
   static const _installRemoveChannel = MethodChannel('app_installed_channel');
   // giới hạn ứng dụng
   static const _appLimitChannel = MethodChannel('app_limit_channel');
+  // bật vpn
+  static const _startVpnChannel = MethodChannel('vpn_channel');
   // các channel
 
   // channel khởi tạo, kiểm tra quyền kiểm soát của phụ huynh trên ios
@@ -40,7 +42,6 @@ class NativeCommunicator {
       throw ("Lỗi cài đặt giám sát: $e");
     }
   }
-
   // Lấy thời gian sử dụng trong android
   Future<List<AppUsageInfoModel>> usageStatsChannel() async {
     try {
@@ -98,5 +99,14 @@ class NativeCommunicator {
         rethrow;
       }
     });
+  }
+
+  // Bật vnp
+  Future<void> startVpnService() async {
+    try {
+      await _startVpnChannel.invokeMethod('startVpn');
+    } catch (e) {
+      rethrow;
+    }
   }
 }

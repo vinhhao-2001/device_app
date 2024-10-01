@@ -34,6 +34,8 @@ Future<bool> onIosBackground(ServiceInstance service) async {
 void onStart(ServiceInstance service) async {
   await Firebase.initializeApp();
 
+  ChildFirebaseApi().getAppLimit();
+
   Timer.periodic(const Duration(seconds: 5), (timer) async {
     final position = await Permissions().determinePosition();
     await ChildFirebaseApi().sendLocation(position);

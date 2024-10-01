@@ -1,4 +1,4 @@
-package com.hao.device_app
+package com.hao.device_app.receiver
 
 import android.app.admin.DeviceAdminReceiver
 import android.content.Context

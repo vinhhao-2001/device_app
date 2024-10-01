@@ -14,6 +14,8 @@ import android.provider.Settings
 import android.text.TextUtils
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.hao.device_app.receiver.MyDeviceAdminReceiver
+import com.hao.device_app.service.MyAccessibilityService
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 

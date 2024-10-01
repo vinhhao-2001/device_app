@@ -1,4 +1,4 @@
-package com.hao.device_app
+package com.hao.device_app.service
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.IBinder
 import android.util.Log
+import com.hao.device_app.UsageInfoHandler
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 

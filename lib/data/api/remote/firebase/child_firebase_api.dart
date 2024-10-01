@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:device_app/core/utils/utils.dart';
-import 'package:device_app/model/app_limit_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../../../core/utils/utils.dart';
+import '../../../../model/app_limit_model.dart';
 import '../../../../model/app_usage_info_model.dart';
 import '../../../../model/monitor_settings_model.dart';
+import '../../local/db_helper/child_database.dart';
 import '../../local/native/native_communicator.dart';
 
 class ChildFirebaseApi {
@@ -110,15 +111,25 @@ class ChildFirebaseApi {
   }
 
   // lấy danh sách ứng dụng bị giới hạn trên firebase
-  // Future<List<AppLimitModel>> getAppLimit() async {
-  //   try{
-  //     final DatabaseReference reference = FirebaseDatabase.instance.ref();
-  //     reference.child('listAppLimit').onValue.listen((value){
-  //       final data = value.snapshot.value as Map<dynamic,dynamic>;
-  //       return data;
-  //     });
-  //   }catch(e){
-  //     rethrow;
-  //   }
-  // }
+  Future<void> getAppLimit() async {
+    try {
+      final DatabaseReference reference = FirebaseDatabase.instance.ref();
+      reference.child('listAppLimit').onValue.listen((value) {
+        if (value.snapshot.exists) {
+          final data = value.snapshot.value as Map<dynamic, dynamic>;
+          List<AppLimitModel> listApp = [];
+          data.forEach((key, value) {
+            listApp
+                .add(AppLimitModel.fromMap(Map<String, dynamic>.from(value)));
+          });
+          final lisAppName = listApp.map((app) => app.appName).toList();
+          ChildDatabase().insertBlockedApps(lisAppName);
+        } else {
+          throw 'Chưa có ứng dụng bị giới hạn';
+        }
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -17,4 +17,13 @@ class AppLimitModel {
       'timeLimit': timeLimit,
     };
   }
+
+  factory AppLimitModel.fromMap(Map<dynamic, dynamic> map) {
+    return AppLimitModel(
+      packageName: map['packageName'],
+      appName: map['appName'],
+      appIcon: map['appIcon'],
+      timeLimit: map['timeLimit'],
+    );
+  }
 }

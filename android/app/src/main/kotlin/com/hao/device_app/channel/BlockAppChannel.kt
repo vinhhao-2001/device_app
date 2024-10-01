@@ -1,4 +1,4 @@
-package com.hao.device_app
+package com.hao.device_app.channel
 
 import android.content.Context
 import io.flutter.embedding.engine.FlutterEngine

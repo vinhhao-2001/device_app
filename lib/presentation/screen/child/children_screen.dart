@@ -61,6 +61,10 @@ class _ChildrenScreenState extends State<ChildrenScreen> {
               'Welcome,Trẻ!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 10,),
+            TextButton(onPressed: (){
+              NativeCommunicator().startVpnService();
+            }, child: Text('Vpn')),
             const SizedBox(height: 30),
             Card(
               shape: RoundedRectangleBorder(
