@@ -14,11 +14,13 @@ import GoogleMaps
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
+        
         if #available(iOS 10.0, *) {
-          UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
+            UNUserNotificationCenter.current().delegate = self as? UNUserNotificationCenterDelegate
         }
-         SwiftFlutterBackgroundServicePlugin.taskIdentifier = "your.custom.task.identifier"
-
+        SwiftFlutterBackgroundServicePlugin.taskIdentifier = "your.custom.task.identifier"
+        
+        
         let controller = window?.rootViewController as! FlutterViewController
         
         // Bật theo dõi pin
@@ -29,7 +31,7 @@ import GoogleMaps
         let deviceInfoChannel = FlutterMethodChannel(name: "device_info_channel", binaryMessenger: controller.binaryMessenger)
         let appLimitChannel = FlutterMethodChannel(name: "app_limit_channel", binaryMessenger: controller.binaryMessenger)
         let appMonitorChannel = FlutterMethodChannel(name: "app_monitor_channel", binaryMessenger: controller.binaryMessenger)
-
+        
         // Lúc khởi tạo, kiểm tra quyền kiểm soát của phụ huynh
         initChannel.setMethodCallHandler {
             (call: FlutterMethodCall, result: @escaping FlutterResult) in
@@ -45,7 +47,7 @@ import GoogleMaps
             case "getDeviceInfo":
                 self.getDeviceInfo(result: result)
             default:
-                 result(FlutterMethodNotImplemented)
+                result(FlutterMethodNotImplemented)
             }
         }
         
@@ -53,16 +55,7 @@ import GoogleMaps
             if call.method == "appLimit" {
                 // Mở giao diện giới hạn ứng dụng
                 self.presentSwiftUIView(controller: controller)
-//                DispatchQueue.main.async {
-//                    let contentView = ContentView()
-//                    let host = UIHostingController(rootView: contentView)
-//
-//                    if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-//                       let rootViewController = windowScene.windows.first?.rootViewController {
-//                        rootViewController.present(host, animated: true, completion: nil)
-//                    }
-//                }
-             result("Opened app limit interface")
+                result("Opened app limit interface")
             } else {
                 result(FlutterMethodNotImplemented)
             }
@@ -75,7 +68,7 @@ import GoogleMaps
                 MyModel.shared.settingMonitor(with: args)
             }
         }
-
+        
         FirebaseApp.configure()
         GMSServices.provideAPIKey("AIzaSyDQ2c_pOSOFYSjxGMwkFvCVWKjYOM9siow")
         // AIzaSyDQ2c_pOSOFYSjxGMwkFvCVWKjYOM9siow
@@ -83,8 +76,8 @@ import GoogleMaps
         GeneratedPluginRegistrant.register(with: self)
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
-
-    //
+    
+    // mở giao diện chặn ứng dụng
     private func presentSwiftUIView(controller: FlutterViewController) {
         let contentView = ContentView()
         let hostingController = UIHostingController(rootView: contentView)
@@ -162,6 +155,7 @@ import GoogleMaps
         }
     }
     
+    // Lấy thông tin thiết bị
     private func getDeviceInfo(result: @escaping FlutterResult) {
         let batteryLevel = Int(UIDevice.current.batteryLevel * 100)
         let deviceName = UIDevice.current.name

@@ -7,4 +7,11 @@ class ChildDatabase {
     final listApp = listPackageName.join('+');
     rf.setString('listBlockedApps', listApp);
   }
+
+  // Lưu danh sách web bị chặn trong máy của trẻ
+  Future<void> insertWebBlock(List<String> listWebBlocked) async {
+    SharedPreferences rf = await SharedPreferences.getInstance();
+    final list = listWebBlocked.join('+');
+    rf.setString('listWebBlocked', list);
+  }
 }

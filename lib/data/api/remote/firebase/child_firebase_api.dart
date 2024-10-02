@@ -132,4 +132,19 @@ class ChildFirebaseApi {
       rethrow;
     }
   }
+
+  // Lấy danh sách trang web bị giới hạn từ firebase
+  void getBlockedWebsites() {
+    DatabaseReference reference = FirebaseDatabase.instance.ref('listWebBlock');
+    reference.onValue.listen((event) {
+      final snapshot = event.snapshot;
+      if (snapshot.exists) {
+        List<String> blockedWebsites = (snapshot.value as Map<dynamic, dynamic>)
+            .values
+            .cast<String>()
+            .toList();
+        ChildDatabase().insertWebBlock(blockedWebsites);
+      }
+    }, onError: (error) {});
+  }
 }

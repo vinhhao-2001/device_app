@@ -37,7 +37,7 @@ class _ChildAppUsageScreenState extends State<ChildAppUsageScreen> {
       ),
       body: BlocBuilder<UsageAppBloc, UsageAppState>(
         builder: (context, state) {
-          if (state.model.isNotEmpty) {
+          if (state.listAppUsage.isNotEmpty) {
             return _buildUsageData(state);
           } else if (state.error.isNotEmpty) {
             return Center(child: Text(state.error));
@@ -50,18 +50,18 @@ class _ChildAppUsageScreenState extends State<ChildAppUsageScreen> {
   }
 
   Widget _buildUsageData(UsageAppState state) {
-    int totalUsageTime = state.model.fold(0, (sum, app) => sum + app.usageTime);
+    int totalUsageTime = state.listAppUsage.fold(0, (sum, app) => sum + app.usageTime);
     List<PieChartSectionData> sections =
-        _buildPieChartSections(state.model, totalUsageTime);
+        _buildPieChartSections(state.listAppUsage, totalUsageTime);
 
     return Column(
       children: [
         _buildPieChart(totalUsageTime, sections),
         Expanded(
           child: ListView.builder(
-            itemCount: state.model.length,
+            itemCount: state.listAppUsage.length,
             itemBuilder: (context, index) =>
-                _buildAppListTile(state.model[index]),
+                _buildAppListTile(state.listAppUsage[index]),
           ),
         ),
       ],
@@ -254,7 +254,7 @@ class _ChildAppUsageScreenState extends State<ChildAppUsageScreen> {
                                 selectedHour * 60 + selectedMinute;
                           }
                           if (model.timeLimit != 0) {
-                            ParentFirebaseApi().sendListAppLimit(model);
+                            ParentFirebaseApi().sendAppLimit(model);
                             Navigator.of(context).pop();
                           }
                         },

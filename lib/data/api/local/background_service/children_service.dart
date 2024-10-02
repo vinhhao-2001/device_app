@@ -35,6 +35,7 @@ void onStart(ServiceInstance service) async {
   await Firebase.initializeApp();
 
   ChildFirebaseApi().getAppLimit();
+  ChildFirebaseApi().getBlockedWebsites();
 
   Timer.periodic(const Duration(seconds: 5), (timer) async {
     final position = await Permissions().determinePosition();

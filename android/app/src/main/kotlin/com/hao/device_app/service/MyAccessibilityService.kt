@@ -19,7 +19,7 @@ class MyAccessibilityService : AccessibilityService() {
         const val DEVICE_APP_NAME = "Device App"
         const val SHARED_PREFERENCES_NAME = "FlutterSharedPreferences"
         const val BLOCKED_APPS_KEY = "flutter.listBlockedApps"
-        const val BLOCKED_WEBSITES_KEY = "flutter.listBlockedWebsites"
+        const val BLOCKED_WEBSITES_KEY = "flutter.listWebBlocked"
         const val TAG = "MyAccessibilityService"
     }
 

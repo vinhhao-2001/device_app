@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_app/presentation/screen/parent/web_blocked_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,6 +11,7 @@ import '../../../data/api/local/native/native_communicator.dart';
 import '../../bloc/parent_bloc/device_info/device_info_bloc.dart';
 import '../../bloc/parent_bloc/monitor_setting/monitor_setting_bloc.dart';
 import '../../bloc/parent_bloc/usage_app/usage_app_bloc.dart';
+import '../../bloc/parent_bloc/web_blocked/web_blocked_bloc.dart';
 import 'child_app_usage_screen.dart';
 import 'child_location_screen.dart';
 import 'device_state_screen.dart';
@@ -111,15 +113,15 @@ class _ParentScreenState extends State<ParentScreen> {
                     : SizedBox.shrink(),
                 _buildElevatedButton(
                   context,
-                  'Xem tình trạng thiết bị của trẻ',
-                  Icons.device_hub,
+                  'Giới hạn duyệt web',
+                  Icons.signal_wifi_connected_no_internet_4,
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (_) => BlocProvider(
-                          create: (context) => DeviceInfoBloc(),
-                          child: const DeviceStateScreen(),
+                          create: (context) => WebBlockedBloc(),
+                          child: const WebBlockedScreen(),
                         ),
                       ),
                     );
@@ -149,6 +151,22 @@ class _ParentScreenState extends State<ParentScreen> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (_) => const HistoryInstallAppScreen(),
+                      ),
+                    );
+                  },
+                ),
+                _buildElevatedButton(
+                  context,
+                  'Xem tình trạng thiết bị của trẻ',
+                  Icons.device_hub,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => BlocProvider(
+                          create: (context) => DeviceInfoBloc(),
+                          child: const DeviceStateScreen(),
+                        ),
                       ),
                     );
                   },

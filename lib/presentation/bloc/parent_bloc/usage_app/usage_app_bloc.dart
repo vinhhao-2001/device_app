@@ -13,7 +13,7 @@ class UsageAppBloc extends Bloc<UsageAppEvent, UsageAppState> {
       try {
         final usageList = await ParentFirebaseApi().getUsageAppsInfo();
         usageList.sort((a, b) => b.usageTime.compareTo(a.usageTime));
-        emit(state.copyWith(model: usageList));
+        emit(state.copyWith(listAppUsage: usageList));
       } catch (e) {
         emit(state.copyWith(error: e.toString()));
       }

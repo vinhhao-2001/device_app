@@ -192,11 +192,40 @@ class ParentFirebaseApi {
   }
 
   // Gửi danh sách ứng dụng bị giới hạn lên firebase
-  Future<void> sendListAppLimit(AppLimitModel model) async {
+  Future<void> sendAppLimit(AppLimitModel model) async {
     DatabaseReference reference = FirebaseDatabase.instance.ref();
     reference
         .child('listAppLimit')
         .child(Utils().sanitizeKey(model.packageName))
         .set(model.toMap());
+  }
+
+  // Gửi danh sách trang web bị giới hạn lên firebase
+  Future<void> sendWebBlocked(String website) async {
+    DatabaseReference reference =
+        FirebaseDatabase.instance.ref('listWebBlocked');
+    String key = reference.push().key!;
+    await reference.child(key).set(website);
+  }
+
+  // Lấy danh sách trang web bị giới hạn từ firebase
+  Future<List<String>> getBlockedWebsites() async {
+    try {
+      final snapshot = await FirebaseDatabase.instance
+          .ref('listWebBlocked')
+          .get()
+          .timeout(Duration(seconds: 10));
+      return snapshot.exists
+          ? (snapshot.value as Map<dynamic, dynamic>)
+              .values
+              .cast<String>()
+              .toList()
+          : [];
+    } catch (e) {
+      if (e is TimeoutException) {
+        throw 'Không có kết nối internet';
+      }
+      rethrow;
+    }
   }
 }
